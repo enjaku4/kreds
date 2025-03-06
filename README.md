@@ -1,43 +1,71 @@
 # Kreds
 
-TODO: Delete this and the text below, and describe your gem
+[![Gem Version](https://badge.fury.io/rb/kreds.svg)](http://badge.fury.io/rb/kreds)
+[![Github Actions badge](https://github.com/enjaku4/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/enjaku4/kreds/actions/workflows/ci.yml)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/kreds`. To experiment with that code, run `bin/console` for an interactive prompt.
+Kreds is a simpler and shorter way to access Rails credentials — with safety built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive. That’s where Kreds comes in.
+
+Instead of writing:
+
+```ruby
+Rails.application.credentials[:recaptcha][:site_key]
+```
+
+You can simply use:
+
+```ruby
+Kreds.fetch!(:recaptcha, :site_key)
+```
+
+This not only shortens your code but also ensures an exception is raised if a key is missing or a value is blank, with a clear, human-readable error message.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem "kreds"
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+And then execute:
 
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```shell
+bundle install
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+Kreds provides a single method `.fetch!(*keys)`:
 
-## Development
+```ruby
+  Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+If you make a typo, such as writing `access_key` instead of `access_key_id`, Kreds will raise `Kreds::UnknownKeyError` with the message: `Key not found: [:aws][:s3][:credentials][:access_key]`. The same applies to any incorrect key in the path.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Similarly, if you add an extra key that doesn’t exist, such as: `Kreds.fetch!(:aws, :s3, :credentials, :access_key_id, :id)`, Kreds will raise `Kreds::UnknownKeyError` with the message: `Key not found: [:aws][:s3][:credentials][:access_key_id][:id]`.
+
+Kreds also ensures that values are not left blank. For example, if all keys are correct but the value for `access_key_id` is empty, Kreds will raise `Kreds::BlankValueError` with the message: `Blank value for: [:aws][:s3][:credentials][:access_key_id]`.
+
+## Problems?
+
+Facing a problem or want to suggest an enhancement?
+
+- **Open a Discussion**: If you have a question, experience difficulties using the gem, or have a suggestion for improvements, feel free to use the Discussions section.
+
+Encountered a bug?
+
+- **Create an Issue**: If you've identified a bug, please create an issue. Be sure to provide detailed information about the problem, including the steps to reproduce it.
+- **Contribute a Solution**: Found a fix for the issue? Feel free to create a pull request with your changes.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/kreds. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/kreds/blob/master/CODE_OF_CONDUCT.md).
+Before creating an issue or a pull request, please read the [contributing guidelines](https://github.com/enjaku4/kreds/blob/master/CONTRIBUTING.md).
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the [MIT License](https://github.com/enjaku4/kreds/blob/master/LICENSE.txt).
 
 ## Code of Conduct
 
-Everyone interacting in the Kreds project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/kreds/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Kreds project is expected to follow the [code of conduct](https://github.com/enjaku4/kreds/blob/master/CODE_OF_CONDUCT.md).
