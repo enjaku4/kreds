@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
   spec.metadata["rubygems_mfa_required"] = "true"
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
+  spec.summary = "The missing shorthand for Rails credentials"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1", "< 3.5"
 
