@@ -38,7 +38,7 @@ bundle install
 Kreds provides a single method `.fetch!(*keys)`:
 
 ```ruby
-  Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
+Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
 ```
 
 If you make a typo, such as writing `access_key` instead of `access_key_id`, Kreds will raise `Kreds::UnknownKeyError` with the message: `Key not found: [:aws][:s3][:credentials][:access_key]`. The same applies to any incorrect key in the path.
