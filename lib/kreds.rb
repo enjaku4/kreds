@@ -1,5 +1,7 @@
 require_relative "kreds/version"
 
+require "rails"
+
 # TODO: refactor if needed
 module Kreds
   class Error < StandardError; end
