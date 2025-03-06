@@ -1,6 +1,5 @@
 require_relative "kreds/version"
 
-require "active_support/logger"
 require "rails"
 
 # TODO: refactor if needed
