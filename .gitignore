@@ -1,0 +1,29 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+# rspec failure tracking
+.rspec_status
+
+# macOS
+.DS_Store
+
+# rbenv
+.ruby-version
+
+# byebug
+.byebug_history
+
+# RubyMine
+.idea
+
+# VS Code
+.vscode
+
+# solargraph
+.solargraph.yml

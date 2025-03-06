@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+jobs:
+
+  linting:
+    runs-on: ubuntu-latest
+
+    name: RuboCop
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+      - name: Run RuboCop
+        run: bundle exec rubocop --color
+
+  todo:
+    runs-on: ubuntu-latest
+
+    name: ToDo
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+      - name: Run grepfruit
+        run: bundle exec grepfruit -r TODO -e 'vendor,tmp,.yardoc,.git,ci.yml:38' --search-hidden
+
+  tests:
+    runs-on: ubuntu-latest
+
+    name: Ruby ${{ matrix.ruby }} - Rails ${{ matrix.rails }}
+    strategy:
+      matrix:
+        ruby:
+          - "3.1"
+          - "3.2"
+          - "3.3"
+          - "3.4"
+        rails:
+          - "~> 7.0.0"
+          - "~> 7.1.0"
+          - "~> 7.2.0"
+          - "~> 8.0.0"
+        exclude:
+          - ruby: "3.1"
+            rails: "~> 8.0.0"
+          - ruby: "3.4"
+            rails: "~> 7.0.0"
+
+    env:
+      RAILS_VERSION: "${{ matrix.rails }}"
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run RSpec
+        run: bundle exec rspec
