@@ -27,51 +27,185 @@ RSpec.describe Kreds do
   end
 
   describe ".fetch!" do
-    subject { described_class.fetch!(*args) }
+    context "when var is not provided" do
+      subject { described_class.fetch!(*args) }
 
-    context "when keys exist and the value is in place" do
-      let(:args) { [:foo, :bar, :baz] }
+      context "when no keys are provided" do
+        let(:args) { [] }
 
-      it "returns the value" do
-        expect(subject).to eq(42)
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "No keys provided")
+        end
+      end
+
+      context "when keys are not symbols or strings" do
+        let(:args) { [:foo, 42] }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+        end
+      end
+
+      context "when keys exist and the value is in place" do
+        let(:args) { [:foo, :bar, :baz] }
+
+        it "returns the value" do
+          expect(subject).to eq(42)
+        end
+      end
+
+      context "when keys exist and the value is in place with a string" do
+        let(:args) { ["foo", "bar", "baz"] }
+
+        it "returns the value" do
+          expect(subject).to eq(42)
+        end
+      end
+
+      context "when a key is missing" do
+        let(:args) { [:foo, :bar, :bad] }
+
+        it "is raises error" do
+          expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:bad]")
+        end
+      end
+
+      context "when a key in the middle is missing" do
+        let(:args) { [:foo, :bad, :baz] }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bad]")
+        end
+      end
+
+      context "when the value is blank" do
+        let(:args) { [:bad] }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::Error, "Blank value in credentials: [:bad]")
+        end
+      end
+
+      context "when there are too many keys" do
+        let(:args) { [:foo, :bar, :baz, :bad] }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:baz][:bad]")
+        end
       end
     end
 
-    context "when a key is missing" do
-      let(:args) { [:foo, :bar, :bad] }
+    context "when the var is provided" do
+      subject { described_class.fetch!(*args, var:) }
 
-      it "is raises error" do
-        expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:bad]")
+      context "when var is not a string" do
+        let(:args) { [:foo, :bar, :baz] }
+        let(:var) { 42 }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+        end
       end
-    end
 
-    context "when a key in the middle is missing" do
-      let(:args) { [:foo, :bad, :baz] }
+      context "when the environment variable exists and the value is in place" do
+        let(:var) { "RAILS_ENV" }
 
-      it "raises error" do
-        expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bad]")
+        context "when the credential are in place" do
+          let(:args) { [:foo, :bar, :baz] }
+
+          it "returns the credential value" do
+            expect(subject).to eq(42)
+          end
+        end
+
+        context "when the credential is blank" do
+          let(:args) { [:bad] }
+
+          it "returns the environment variable value" do
+            expect(subject).to eq("test")
+          end
+        end
+
+        context "when the credential is missing" do
+          let(:args) { [:foo, :bar, :bad] }
+
+          it "returns the environment variable value" do
+            expect(subject).to eq("test")
+          end
+        end
       end
-    end
 
-    context "when the value is blank" do
-      let(:args) { [:bad] }
+      context "when the environment variable is missing" do
+        let(:var) { "MISSING_ENV_VAR" }
 
-      it "raises error" do
-        expect { subject }.to raise_error(Kreds::Error, "Blank value in credentials: [:bad]")
+        context "when credentials are in place" do
+          let(:args) { [:foo, :bar, :baz] }
+
+          it "returns the credential value" do
+            expect(subject).to eq(42)
+          end
+        end
+
+        context "when the credential is blank" do
+          let(:args) { [:bad] }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Kreds::Error, "Blank value in credentials: [:bad], Environment variable not found: \"MISSING_ENV_VAR\"")
+          end
+        end
+
+        context "when the credential is missing" do
+          let(:args) { [:foo, :bar, :bad] }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:bad], Environment variable not found: \"MISSING_ENV_VAR\"")
+          end
+        end
       end
-    end
 
-    context "when there are too many keys" do
-      let(:args) { [:foo, :bar, :baz, :bad] }
+      context "when the environment variable value is blank" do
+        let(:var) { "BLANK_ENV_VAR" }
 
-      it "raises error" do
-        expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:baz][:bad]")
+        before { ENV["BLANK_ENV_VAR"] = "" }
+        after { ENV.delete("BLANK_ENV_VAR") }
+
+        context "when credentials are in place" do
+          let(:args) { [:foo, :bar, :baz] }
+
+          it "returns the credential value" do
+            expect(subject).to eq(42)
+          end
+        end
+
+        context "when the credential is blank" do
+          let(:args) { [:bad] }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Kreds::Error, "Blank value in credentials: [:bad], Blank value in environment variable: \"BLANK_ENV_VAR\"")
+          end
+        end
+
+        context "when the credential is missing" do
+          let(:args) { [:foo, :bar, :bad] }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:bad], Blank value in environment variable: \"BLANK_ENV_VAR\"")
+          end
+        end
       end
     end
   end
 
   describe ".var!" do
     subject { described_class.var!(var) }
+
+    context "when var is not a string" do
+      let(:var) { 42 }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+      end
+    end
 
     context "when the environment variable exists and the value is in place" do
       let(:var) { "RAILS_ENV" }
@@ -85,9 +219,7 @@ RSpec.describe Kreds do
       let(:var) { "MISSING_ENV_VAR" }
 
       it "raises error" do
-        expect { subject }.to raise_error(
-          Kreds::Error, "Environment variable not found: \"MISSING_ENV_VAR\""
-        )
+        expect { subject }.to raise_error(Kreds::Error, "Environment variable not found: \"MISSING_ENV_VAR\"")
       end
     end
 
@@ -98,9 +230,7 @@ RSpec.describe Kreds do
       after { ENV.delete("BLANK_ENV_VAR") }
 
       it "raises error" do
-        expect { subject }.to raise_error(
-          Kreds::Error, "Blank value in environment variable: \"BLANK_ENV_VAR\""
-        )
+        expect { subject }.to raise_error(Kreds::Error, "Blank value in environment variable: \"BLANK_ENV_VAR\"")
       end
     end
   end

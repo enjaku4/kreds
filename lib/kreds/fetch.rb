@@ -1,32 +1,67 @@
 module Kreds
   module Fetch
-    # TODO: a method to fetch keys per rails environment
-    # TODO: fallback to env variables
+    # TODO: a method to fetch a value per rails env
     def fetch!(*keys, var: nil)
+      validate_keys!(keys)
+      validate_var!(var)
+
       path = []
 
       keys.reduce(Rails.application.credentials) do |hash, key|
         path << key
-
-        result = hash.fetch(key)
-
-        raise(Kreds::Error, "Blank value in credentials: [:#{path.join("][:")}]") if result.blank?
-        raise(Kreds::Error, "Credentials key not found: [:#{path.join("][:")}][:#{keys[path.size]}]") if !result.is_a?(Hash) && keys != path
-
-        result
+        fetch_key(hash, key, path, keys)
       end
-    rescue KeyError
-      raise Kreds::Error, "Credentials key not found: [:#{path.join("][:")}]"
+    rescue Kreds::BlankCredentialsError, Kreds::UnknownCredentialsError => e
+      fallback_to_var(e, var)
     end
 
     def var!(var)
-      value = ENV.fetch(var)
+      validate_var!(var)
 
-      raise(Kreds::Error, "Blank value in environment variable: #{var.inspect}") if value.blank?
+      result, success = check_var(var)
+      success ? result : raise(result)
+    end
+
+    private
+
+    def validate_keys!(keys)
+      raise Kreds::InvalidArgumentError, "No keys provided" if keys.empty?
+
+      return if keys.all? { _1.is_a?(Symbol) || _1.is_a?(String) }
+
+      raise Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String"
+    end
+
+    def validate_var!(var)
+      raise Kreds::InvalidArgumentError, "Environment variable must be a String" if var.present? && !var.is_a?(String)
+    end
+
+    def fetch_key(hash, key, path, keys)
+      value = hash.fetch(key.to_sym)
+
+      raise Kreds::BlankCredentialsError, "Blank value in credentials: [:#{path.join("][:")}]" if value.blank?
+      raise Kreds::UnknownCredentialsError, "Credentials key not found: [:#{path.join("][:")}][:#{keys[path.size]}]" if !value.is_a?(Hash) && keys != path
 
       value
     rescue KeyError
-      raise Kreds::Error, "Environment variable not found: #{var.inspect}"
+      raise Kreds::UnknownCredentialsError, "Credentials key not found: [:#{path.join("][:")}]"
+    end
+
+    def fallback_to_var(error, var)
+      return raise error if var.blank?
+
+      result, success = check_var(var)
+      success ? result : raise(Kreds::Error, [error.message, result.message].join(", "))
+    end
+
+    def check_var(var)
+      value = ENV.fetch(var)
+
+      return [Kreds::BlankEnvironmentVariableError.new("Blank value in environment variable: #{var.inspect}"), false] if value.blank?
+
+      [value, true]
+    rescue KeyError
+      [Kreds::UnknownEnvironmentVariableError.new("Environment variable not found: #{var.inspect}"), false]
     end
   end
 end
