@@ -1,16 +1,33 @@
 RSpec.describe Kreds do
-  describe "#fetch!" do
-    subject { described_class.fetch!(*args) }
+  # Dummy credentials structure:
+  # {
+  #   foo: {
+  #     bar: {
+  #       baz: 42
+  #     }
+  #   },
+  #   bad: nil,
+  #   :secret_key_base: "dummy_secret_key_base"
+  # }
 
-    # Dummy credentials structure:
-    # {
-    #   :foo => {
-    #     :bar => {
-    #       :baz => 42
-    #     }
-    #   },
-    #   :bad => nil
-    # }
+  describe ".show" do
+    it "returns the credentials structure" do
+      expect(described_class.show).to eq(
+        {
+          foo: {
+            bar: {
+              baz: 42
+            }
+          },
+          bad: nil,
+          secret_key_base: "dummy_secret_key_base"
+        }
+      )
+    end
+  end
+
+  describe ".fetch!" do
+    subject { described_class.fetch!(*args) }
 
     context "when keys exist and the value is in place" do
       let(:args) { [:foo, :bar, :baz] }
