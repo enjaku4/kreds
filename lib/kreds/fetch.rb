@@ -1,5 +1,8 @@
 module Kreds
   module Fetch
+    # TODO: show method to output the credentials in a human readable format for usage in the console
+    # TODO: a method to fetch keys per rails environment
+    # TODO: fallback to env variables and shortcut method for fetching directly from ENV
     def fetch!(*keys)
       path = []
 

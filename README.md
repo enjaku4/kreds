@@ -1,3 +1,5 @@
+<!-- TODO: description of the new methods -->
+
 # Kreds
 
 [![Gem Version](https://badge.fury.io/rb/kreds.svg)](http://badge.fury.io/rb/kreds)
