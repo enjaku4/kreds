@@ -8,10 +8,6 @@ require_relative "kreds/show"
 module Kreds
   class Error < StandardError; end
 
-  class UnknownEnvironmentVariableError < Error; end
-  class UnknownKeyError < Error; end
-  class BlankValueError < Error; end
-
   extend ::Kreds::Fetch
   extend ::Kreds::Show
 end
