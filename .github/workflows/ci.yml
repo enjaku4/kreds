@@ -2,10 +2,6 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
-
-  pull_request:
 
 jobs:
 
@@ -19,7 +15,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
-          bundler-cache: true
+      - name: Bundle install
+        run: bundle install
       - name: Run RuboCop
         run: bundle exec rubocop --color
 
@@ -33,7 +30,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
-          bundler-cache: true
+      - name: Bundle install
+        run: bundle install
       - name: Run grepfruit
         run: bundle exec grepfruit -r TODO -e 'vendor,tmp,.yardoc,.git,ci.yml:38' --search-hidden
 
@@ -68,6 +66,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
+      - name: Bundle install
+        run: bundle install
       - name: Run RSpec
         run: bundle exec rspec
