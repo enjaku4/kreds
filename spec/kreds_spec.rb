@@ -2,10 +2,15 @@ RSpec.describe Kreds do
   describe "#fetch!" do
     subject { described_class.fetch!(*args) }
 
-    before do
-      allow(Rails.application).to receive(:credentials)
-        .and_return({ foo: { bar: { baz: 42 } }, bad: "", qux: 13 })
-    end
+    # Dummy credentials structure:
+    # {
+    #   :foo => {
+    #     :bar => {
+    #       :baz => 42
+    #     }
+    #   },
+    #   :bad => nil
+    # }
 
     context "when keys exist and the value is in place" do
       let(:args) { [:foo, :bar, :baz] }
@@ -23,6 +28,14 @@ RSpec.describe Kreds do
       end
     end
 
+    context "when a key in the middle is missing" do
+      let(:args) { [:foo, :bad, :baz] }
+
+      it "raises UnknownKeyError error" do
+        expect { subject }.to raise_error(Kreds::UnknownKeyError, "Key not found: [:foo][:bad]")
+      end
+    end
+
     context "when the value is blank" do
       let(:args) { [:bad] }
 
@@ -32,10 +45,10 @@ RSpec.describe Kreds do
     end
 
     context "when there are too many keys" do
-      let(:args) { [:qux, :foo] }
+      let(:args) { [:foo, :bar, :baz, :bad] }
 
       it "raises UnknownKeyError error" do
-        expect { subject }.to raise_error(Kreds::UnknownKeyError, "Key not found: [:qux][:foo]")
+        expect { subject }.to raise_error(Kreds::UnknownKeyError, "Key not found: [:foo][:bar][:baz][:bad]")
       end
     end
   end
