@@ -12,3 +12,5 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+require "#{File.dirname(__FILE__)}/support/test_app"
