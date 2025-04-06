@@ -43,11 +43,11 @@ Kreds provides a single method `.fetch!(*keys)`:
 Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
 ```
 
-If you make a typo, such as writing `access_key` instead of `access_key_id`, Kreds will raise `Kreds::UnknownKeyError` with the message: `Key not found: [:aws][:s3][:credentials][:access_key]`. The same applies to any incorrect key in the path.
+If you make a typo, such as writing `access_key` instead of `access_key_id`, Kreds will raise `Kreds::UnknownKeyError` with the message: `Credentials key not found: [:aws][:s3][:credentials][:access_key]`. The same applies to any incorrect key in the path.
 
-Similarly, if you add an extra key that doesn’t exist, such as: `Kreds.fetch!(:aws, :s3, :credentials, :access_key_id, :id)`, Kreds will raise `Kreds::UnknownKeyError` with the message: `Key not found: [:aws][:s3][:credentials][:access_key_id][:id]`.
+Similarly, if you add an extra key that doesn’t exist, such as: `Kreds.fetch!(:aws, :s3, :credentials, :access_key_id, :id)`, Kreds will raise `Kreds::UnknownKeyError` with the message: `Credentials key not found: [:aws][:s3][:credentials][:access_key_id][:id]`.
 
-Kreds also ensures that values are not left blank. For example, if all keys are correct but the value for `access_key_id` is empty, Kreds will raise `Kreds::BlankValueError` with the message: `Blank value for: [:aws][:s3][:credentials][:access_key_id]`.
+Kreds also ensures that values are not left blank. For example, if all keys are correct but the value for `access_key_id` is empty, Kreds will raise `Kreds::BlankValueError` with the message: `Blank value in credentials: [:aws][:s3][:credentials][:access_key_id]`.
 
 ## Problems?
 
