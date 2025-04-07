@@ -1,5 +1,3 @@
-require "rails"
-
 class TestApp < Rails::Application
   config.eager_load = false
   config.secret_key_base = "dummy_secret_key_base"

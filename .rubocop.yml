@@ -1,18 +1,16 @@
 plugins:
   - rubocop-md
+  - rubocop-packaging
   - rubocop-performance
   - rubocop-rails
   - rubocop-rake
   - rubocop-rspec
+  - rubocop-rspec_rails
   - rubocop-thread_safety
 
-require:
-  - rubocop-packaging
-  - rubocop-rspec_rails
-
 AllCops:
-  TargetRailsVersion: 7.0
-  TargetRubyVersion: 3.1
+  TargetRailsVersion: 7.1
+  TargetRubyVersion: 3.2
   NewCops: enable
 
 Layout/LineLength:
@@ -21,10 +19,25 @@ Layout/LineLength:
 Metrics/AbcSize:
   Enabled: false
 
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
 RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
   Enabled: false
 
 Style/Documentation:
@@ -34,6 +47,9 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/MutableConstant:
+  Enabled: false
+
+Style/ParallelAssignment:
   Enabled: false
 
 Style/StringLiterals:

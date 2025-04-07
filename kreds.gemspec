@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.summary = "The missing shorthand for Rails credentials"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.1", "< 3.5"
+  spec.required_ruby_version = ">= 3.2", "< 3.5"
 
   spec.files = [
     "kreds.gemspec", "README.md", "CHANGELOG.md", "LICENSE.txt"
@@ -19,5 +19,5 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "rails", ">= 7.0", "< 8.1"
+  spec.add_dependency "rails", ">= 7.1", "< 8.1"
 end
