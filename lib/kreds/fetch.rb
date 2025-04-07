@@ -15,7 +15,6 @@ module Kreds
     end
 
     def env_fetch!(*keys, var: nil)
-      # TODO: tests
       fetch!(Rails.env, *keys, var: var)
     end
 

@@ -1,15 +1,4 @@
 RSpec.describe Kreds do
-  # Dummy credentials structure:
-  # {
-  #   foo: {
-  #     bar: {
-  #       baz: 42
-  #     }
-  #   },
-  #   bad: nil,
-  #   :secret_key_base: "dummy_secret_key_base"
-  # }
-
   describe ".show" do
     it "returns the credentials structure" do
       expect(described_class.show).to eq(
@@ -20,7 +9,10 @@ RSpec.describe Kreds do
             }
           },
           bad: nil,
-          secret_key_base: "dummy_secret_key_base"
+          secret_key_base: "dummy_secret_key_base",
+          test: {
+            foo: [1, 2, 3]
+          }
         }
       )
     end
@@ -192,6 +184,24 @@ RSpec.describe Kreds do
             expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:bad], Blank value in environment variable: \"BLANK_ENV_VAR\"")
           end
         end
+      end
+    end
+  end
+
+  describe ".env_fetch!" do
+    context "when stubbed" do
+      let(:result) { double }
+
+      before { allow(described_class).to receive(:fetch!).with("test", :foo, var: "MY_VAR").and_return(result) }
+
+      it "calls fetch! with Rails.env" do
+        expect(described_class.env_fetch!(:foo, var: "MY_VAR")).to eq(result)
+      end
+    end
+
+    context "with real data" do
+      it "returns the value from credentials" do
+        expect(described_class.env_fetch!(:foo)).to eq([1, 2, 3])
       end
     end
   end
