@@ -58,7 +58,7 @@ RSpec.describe Kreds do
         let(:args) { [:foo, :bar, :bad] }
 
         it "is raises error" do
-          expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:bad]")
+          expect { subject }.to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:foo][:bar][:bad]")
         end
       end
 
@@ -66,7 +66,7 @@ RSpec.describe Kreds do
         let(:args) { [:foo, :bad, :baz] }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bad]")
+          expect { subject }.to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:foo][:bad]")
         end
       end
 
@@ -74,7 +74,7 @@ RSpec.describe Kreds do
         let(:args) { [:bad] }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::Error, "Blank value in credentials: [:bad]")
+          expect { subject }.to raise_error(Kreds::BlankCredentialsError, "Blank value in credentials: [:bad]")
         end
       end
 
@@ -82,7 +82,7 @@ RSpec.describe Kreds do
         let(:args) { [:foo, :bar, :baz, :bad] }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:foo][:bar][:baz][:bad]")
+          expect { subject }.to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:foo][:bar][:baz][:bad]")
         end
       end
     end
@@ -189,7 +189,7 @@ RSpec.describe Kreds do
   end
 
   describe ".env_fetch!" do
-    context "when stubbed" do
+    context "with stubbed data" do
       let(:result) { double }
 
       before { allow(described_class).to receive(:fetch!).with("test", :foo, var: "MY_VAR").and_return(result) }
@@ -229,7 +229,7 @@ RSpec.describe Kreds do
       let(:var) { "MISSING_ENV_VAR" }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::Error, "Environment variable not found: \"MISSING_ENV_VAR\"")
+        expect { subject }.to raise_error(Kreds::UnknownEnvironmentVariableError, "Environment variable not found: \"MISSING_ENV_VAR\"")
       end
     end
 
@@ -240,7 +240,7 @@ RSpec.describe Kreds do
       after { ENV.delete("BLANK_ENV_VAR") }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::Error, "Blank value in environment variable: \"BLANK_ENV_VAR\"")
+        expect { subject }.to raise_error(Kreds::BlankEnvironmentVariableError, "Blank value in environment variable: \"BLANK_ENV_VAR\"")
       end
     end
   end
