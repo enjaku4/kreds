@@ -1,6 +1,5 @@
 module Kreds
   module Fetch
-    # TODO: a method to fetch a value per rails env
     def fetch!(*keys, var: nil)
       validate_keys!(keys)
       validate_var!(var)
@@ -13,6 +12,11 @@ module Kreds
       end
     rescue Kreds::BlankCredentialsError, Kreds::UnknownCredentialsError => e
       fallback_to_var(e, var)
+    end
+
+    def env_fetch!(*keys, var: nil)
+      # TODO: tests
+      fetch!(Rails.env, *keys, var: var)
     end
 
     def var!(var)
