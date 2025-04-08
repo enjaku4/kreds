@@ -52,7 +52,7 @@ If all keys are correct but the value is blank, Kreds will raise `Kreds::BlankCr
 You can optionally provide a fallback environment variable:
 
 ```ruby
-Kreds.fetch!(:aws, :s3, :credentials, :access_key_id, env_var: "AWS_ACCESS_KEY_ID")
+Kreds.fetch!(:aws, :s3, :credentials, :access_key_id, var: "AWS_ACCESS_KEY_ID")
 ```
 
 If the key is missing or blank in credentials, Kreds will attempt to fetch the value from the specified environment variable.
