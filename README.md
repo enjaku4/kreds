@@ -85,6 +85,18 @@ You can also provide an optional fallback environment variable:
 Kreds.env_fetch!(:recaptcha, :site_key, var: "RECAPTCHA_SITE_KEY")
 ```
 
+### Pass a block on failure
+
+You can pass a block to `fetch!`, `env_fetch!`, and `var!`, which will be executed if the method fails to retrieve the value.
+
+```ruby
+Kreds.fetch!(:aws, :s3, :credentials, :access_key_id) do
+  raise MyCustomError, "Custom error message"
+end
+
+Kreds.var!("THREADS") { 1 }
+```
+
 ### Show credentials
 
 To inspect all credentials as a hash:

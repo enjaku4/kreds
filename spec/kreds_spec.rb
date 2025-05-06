@@ -186,6 +186,15 @@ RSpec.describe Kreds do
         end
       end
     end
+
+    context "when the block is given" do
+      let(:args) { [:no_such_key] }
+      let(:var) { "MISSING_ENV_VAR" }
+
+      it "returns the block value" do
+        expect(described_class.fetch!(*args, var:) { "default_value" }).to eq("default_value")
+      end
+    end
   end
 
   describe ".env_fetch!" do
@@ -202,6 +211,12 @@ RSpec.describe Kreds do
     context "with real data" do
       it "returns the value from credentials" do
         expect(described_class.env_fetch!(:foo)).to eq([1, 2, 3])
+      end
+    end
+
+    context "with block" do
+      it "returns the value from block" do
+        expect(described_class.env_fetch!(:no_such_key, var: "MY_VAR") { "default_value" }).to eq("default_value")
       end
     end
   end
@@ -241,6 +256,14 @@ RSpec.describe Kreds do
 
       it "raises error" do
         expect { subject }.to raise_error(Kreds::BlankEnvironmentVariableError, "Blank value in environment variable: \"BLANK_ENV_VAR\"")
+      end
+    end
+
+    context "when the block is given" do
+      let(:var) { "MISSING_ENV_VAR" }
+
+      it "returns the block value" do
+        expect(described_class.var!(var) { "default_value" }).to eq("default_value")
       end
     end
   end
