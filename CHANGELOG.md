@@ -1,3 +1,7 @@
+## v1.1.0
+
+- Added block support for fallback behavior in all fetching methods
+
 ## v1.0.0
 
 - Dropped support for Rails 7.0
