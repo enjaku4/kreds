@@ -69,6 +69,18 @@ Kreds.var!("AWS_ACCESS_KEY_ID")
 
 This raises `Kreds::UnknownEnvironmentVariableError` if the variable is missing, and `Kreds::BlankEnvironmentVariableError` if it is present but the value is blank.
 
+### Pass a block on failure
+
+You can pass a block to `fetch!`, `env_fetch!`, and `var!`, which will be executed if the method fails to retrieve the value.
+
+```ruby
+Kreds.fetch!(:aws, :s3, :credentials, :access_key_id) do
+  raise MyCustomError, "Custom error message"
+end
+
+Kreds.var!("THREADS") { 1 }
+```
+
 ### Fetch per Rails environment
 
 If your credentials are scoped by Rails environment (e.g., `:production`, `:staging`, `:development`), you can fetch keys under the current environment using:
