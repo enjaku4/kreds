@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     name: RuboCop
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
@@ -24,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
 
     name: ToDo
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
@@ -39,6 +43,8 @@ jobs:
     runs-on: ubuntu-latest
 
     name: Ruby ${{ matrix.ruby }} - Rails ${{ matrix.rails }}
+    permissions:
+      contents: read
     strategy:
       matrix:
         ruby:
