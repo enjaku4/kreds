@@ -1,3 +1,7 @@
+## v1.1.1
+
+- Updated gemspec metadata to include the correct homepage URL
+
 ## v1.1.0
 
 - Added block support for fallback behavior in all fetching methods

@@ -1,7 +1,7 @@
 # Kreds
 
 [![Gem Version](https://badge.fury.io/rb/kreds.svg)](http://badge.fury.io/rb/kreds)
-[![Github Actions badge](https://github.com/enjaku4/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/enjaku4/kreds/actions/workflows/ci.yml)
+[![Github Actions badge](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml)
 
 Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few additional features built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive — that’s where Kreds comes in.
 
@@ -120,12 +120,12 @@ Encountered a bug?
 
 ## Contributing
 
-Before creating an issue or a pull request, please read the [contributing guidelines](https://github.com/enjaku4/kreds/blob/master/CONTRIBUTING.md).
+Before creating an issue or a pull request, please read the [contributing guidelines](https://github.com/brownboxdev/kreds/blob/master/CONTRIBUTING.md).
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://github.com/enjaku4/kreds/blob/master/LICENSE.txt).
+The gem is available as open source under the terms of the [MIT License](https://github.com/brownboxdev/kreds/blob/master/LICENSE.txt).
 
 ## Code of Conduct
 
-Everyone interacting in the Kreds project is expected to follow the [code of conduct](https://github.com/enjaku4/kreds/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Kreds project is expected to follow the [code of conduct](https://github.com/brownboxdev/kreds/blob/master/CODE_OF_CONDUCT.md).
