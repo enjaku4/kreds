@@ -19,11 +19,12 @@ RSpec.describe Kreds do
   end
 
   describe ".fetch!" do
-    context "when var is not provided" do
-      subject { described_class.fetch!(*args) }
+    describe "input validation" do
+      subject { described_class.fetch!(*args, var:) }
 
       context "when no keys are provided" do
         let(:args) { [] }
+        let(:var) { nil }
 
         it "raises error" do
           expect { subject }.to raise_error(Kreds::InvalidArgumentError, "No keys provided")
@@ -32,26 +33,36 @@ RSpec.describe Kreds do
 
       context "when keys are not symbols or strings" do
         let(:args) { [:foo, 42] }
+        let(:var) { nil }
 
         it "raises error" do
           expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
         end
       end
 
-      context "when keys exist and the value is in place" do
+      context "when var is not a string" do
         let(:args) { [:foo, :bar, :baz] }
+        let(:var) { 42 }
 
-        it "returns the value" do
-          expect(subject).to eq(42)
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
         end
       end
+    end
 
-      context "when keys exist and the value is in place with a string" do
+    context "when var is not provided" do
+      subject { described_class.fetch!(*args) }
+
+      context "when symbol keys exist and the value is in place" do
+        let(:args) { [:foo, :bar, :baz] }
+
+        it { is_expected.to eq(42) }
+      end
+
+      context "when string keys exist and the value is in place" do
         let(:args) { ["foo", "bar", "baz"] }
 
-        it "returns the value" do
-          expect(subject).to eq(42)
-        end
+        it { is_expected.to eq(42) }
       end
 
       context "when a key is missing" do
@@ -87,17 +98,8 @@ RSpec.describe Kreds do
       end
     end
 
-    context "when the var is provided" do
+    context "when var is provided" do
       subject { described_class.fetch!(*args, var:) }
-
-      context "when var is not a string" do
-        let(:args) { [:foo, :bar, :baz] }
-        let(:var) { 42 }
-
-        it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
-        end
-      end
 
       context "when the environment variable exists and the value is in place" do
         let(:var) { "RAILS_ENV" }
@@ -105,25 +107,19 @@ RSpec.describe Kreds do
         context "when the credential are in place" do
           let(:args) { [:foo, :bar, :baz] }
 
-          it "returns the credential value" do
-            expect(subject).to eq(42)
-          end
+          it { is_expected.to eq(42) }
         end
 
         context "when the credential is blank" do
           let(:args) { [:bad] }
 
-          it "returns the environment variable value" do
-            expect(subject).to eq("test")
-          end
+          it { is_expected.to eq("test") }
         end
 
         context "when the credential is missing" do
           let(:args) { [:foo, :bar, :bad] }
 
-          it "returns the environment variable value" do
-            expect(subject).to eq("test")
-          end
+          it { is_expected.to eq("test") }
         end
       end
 
@@ -133,9 +129,7 @@ RSpec.describe Kreds do
         context "when credentials are in place" do
           let(:args) { [:foo, :bar, :baz] }
 
-          it "returns the credential value" do
-            expect(subject).to eq(42)
-          end
+          it { is_expected.to eq(42) }
         end
 
         context "when the credential is blank" do
@@ -164,9 +158,7 @@ RSpec.describe Kreds do
         context "when credentials are in place" do
           let(:args) { [:foo, :bar, :baz] }
 
-          it "returns the credential value" do
-            expect(subject).to eq(42)
-          end
+          it { is_expected.to eq(42) }
         end
 
         context "when the credential is blank" do
@@ -198,19 +190,122 @@ RSpec.describe Kreds do
   end
 
   describe ".env_fetch!" do
-    context "with stubbed data" do
-      let(:result) { double }
+    describe "input validation" do
+      subject { described_class.env_fetch!(*args, var:) }
 
-      before { allow(described_class).to receive(:fetch!).with("test", :foo, var: "MY_VAR").and_return(result) }
+      context "when keys are not symbols or strings" do
+        let(:args) { [:foo, 42] }
+        let(:var) { nil }
 
-      it "calls fetch! with Rails.env" do
-        expect(described_class.env_fetch!(:foo, var: "MY_VAR")).to eq(result)
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+        end
+      end
+
+      context "when var is not a string" do
+        let(:args) { [:foo, :bar, :baz] }
+        let(:var) { 42 }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+        end
       end
     end
 
-    context "with real data" do
-      it "returns the value from credentials" do
-        expect(described_class.env_fetch!(:foo)).to eq([1, 2, 3])
+    context "when no var is provided" do
+      subject { described_class.env_fetch!(*args) }
+
+      context "when no keys are provided" do
+        let(:args) { [] }
+
+        it { is_expected.to eq({ foo: [1, 2, 3] }) }
+      end
+
+      context "when keys exist and the value is in place" do
+        let(:args) { [:foo] }
+
+        it { is_expected.to eq([1, 2, 3]) }
+      end
+
+      context "when a key is missing" do
+        let(:args) { [:foo, :bar, :bad] }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:test][:foo][:bar]")
+        end
+      end
+    end
+
+    context "when var is provided" do
+      subject { described_class.env_fetch!(*args, var:) }
+
+      context "when the environment variable exists and the value is in place" do
+        let(:var) { "RAILS_ENV" }
+
+        context "when the credential are in place" do
+          let(:args) { [:foo] }
+
+          it { is_expected.to eq([1, 2, 3]) }
+        end
+
+        context "when the credential is blank" do
+          let(:args) { [:bad] }
+
+          it { is_expected.to eq("test") }
+        end
+
+        context "when the credential is missing" do
+          let(:args) { [:foo, :bar, :bad] }
+
+          it { is_expected.to eq("test") }
+        end
+      end
+
+      context "when the environment variable is missing" do
+        let(:var) { "MISSING_ENV_VAR" }
+
+        context "when credentials are in place" do
+          let(:args) { [:foo] }
+
+          it { is_expected.to eq([1, 2, 3]) }
+        end
+
+        context "when the credential is blank" do
+          let(:args) { [:bad] }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:test][:bad], Environment variable not found: \"MISSING_ENV_VAR\"")
+          end
+        end
+
+        context "when the credential is missing" do
+          let(:args) { [:foo, :bar, :bad] }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:test][:foo][:bar], Environment variable not found: \"MISSING_ENV_VAR\"")
+          end
+        end
+      end
+
+      context "when the environment variable value is blank" do
+        let(:var) { "BLANK_ENV_VAR" }
+
+        before { ENV["BLANK_ENV_VAR"] = "" }
+        after { ENV.delete("BLANK_ENV_VAR") }
+
+        context "when credentials are in place" do
+          let(:args) { [:foo] }
+
+          it { is_expected.to eq([1, 2, 3]) }
+        end
+
+        context "when the credential is blank" do
+          let(:args) { [:bad] }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Kreds::Error, "Credentials key not found: [:test][:bad], Blank value in environment variable: \"BLANK_ENV_VAR\"")
+          end
+        end
       end
     end
 
@@ -235,9 +330,7 @@ RSpec.describe Kreds do
     context "when the environment variable exists and the value is in place" do
       let(:var) { "RAILS_ENV" }
 
-      it "returns the value" do
-        expect(subject).to eq("test")
-      end
+      it { is_expected.to eq("test") }
     end
 
     context "when the environment variable is missing" do
