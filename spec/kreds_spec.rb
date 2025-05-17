@@ -360,4 +360,118 @@ RSpec.describe Kreds do
       end
     end
   end
+
+  describe ".key?" do
+    subject { described_class.key?(*args) }
+
+    context "when no keys are provided" do
+      let(:args) { [] }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "No keys provided")
+      end
+    end
+
+    context "when keys are not symbols or strings" do
+      let(:args) { [:foo, 42] }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+      end
+    end
+
+    context "when the key exists" do
+      context "with symbol keys" do
+        let(:args) { [:foo, :bar, :baz] }
+
+        it { is_expected.to be true }
+      end
+
+      context "with string keys" do
+        let(:args) { ["foo", "bar", "baz"] }
+
+        it { is_expected.to be true }
+      end
+    end
+
+    context "when the key does not exist" do
+      let(:args) { [:foo, :bar, :bad] }
+
+      it { is_expected.to be false }
+    end
+
+    context "when there are too many keys" do
+      let(:args) { [:foo, :bar, :baz, :bad] }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe ".env_key?" do
+    subject { described_class.env_key?(*args) }
+
+    context "when no keys are provided" do
+      let(:args) { [] }
+
+      it { is_expected.to be true }
+    end
+
+    context "when keys are not symbols or strings" do
+      let(:args) { [:foo, 42] }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+      end
+    end
+
+    context "when the key exists" do
+      context "with symbol keys" do
+        let(:args) { [:foo] }
+
+        it { is_expected.to be true }
+      end
+
+      context "with string keys" do
+        let(:args) { ["foo"] }
+
+        it { is_expected.to be true }
+      end
+    end
+
+    context "when the key does not exist" do
+      let(:args) { [:foo, :bad] }
+
+      it { is_expected.to be false }
+    end
+
+    context "when there are too many keys" do
+      let(:args) { [:foo, :bar, :baz, :bad] }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe ".var?" do
+    subject { described_class.var?(var) }
+
+    context "when var is not a string" do
+      let(:var) { 42 }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+      end
+    end
+
+    context "when the environment variable exists" do
+      let(:var) { "RAILS_ENV" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the environment variable is missing" do
+      let(:var) { "MISSING_ENV_VAR" }
+
+      it { is_expected.to be false }
+    end
+  end
 end

@@ -2,6 +2,7 @@ require_relative "kreds/version"
 
 require "rails"
 
+require_relative "kreds/check"
 require_relative "kreds/fetch"
 require_relative "kreds/show"
 
@@ -13,6 +14,7 @@ module Kreds
   class UnknownCredentialsError < Error; end
   class UnknownEnvironmentVariableError < Error; end
 
-  extend ::Kreds::Fetch
   extend ::Kreds::Show
+  extend ::Kreds::Check
+  extend ::Kreds::Fetch
 end
