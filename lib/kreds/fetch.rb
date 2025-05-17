@@ -1,12 +1,16 @@
+require_relative "validations"
+
 module Kreds
   module Fetch
+    include Validations
+
     def fetch!(*keys, var: nil, &)
       validate_keys!(keys)
       validate_var!(var)
 
       path = []
 
-      keys.reduce(Rails.application.credentials) do |hash, key|
+      keys.reduce(Kreds.show) do |hash, key|
         path << key
         fetch_key(hash, key, path, keys)
       end
@@ -29,18 +33,6 @@ module Kreds
     end
 
     private
-
-    def validate_keys!(keys)
-      raise Kreds::InvalidArgumentError, "No keys provided" if keys.empty?
-
-      return if keys.all? { _1.is_a?(Symbol) || _1.is_a?(String) }
-
-      raise Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String"
-    end
-
-    def validate_var!(var)
-      raise Kreds::InvalidArgumentError, "Environment variable must be a String" if var.present? && !var.is_a?(String)
-    end
 
     def fetch_key(hash, key, path, keys)
       value = hash.fetch(key.to_sym)

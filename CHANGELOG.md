@@ -1,3 +1,9 @@
+## v1.2.0
+
+- Added `Kreds.key?` for checking if a key path exists in credentials
+- Added `Kreds.env_key?` for checking if a key path exists in credentials under current Rails environment
+- Added `Kreds.var?` for checking if an environment variable exists
+
 ## v1.1.1
 
 - Updated gemspec metadata to include the correct homepage URL

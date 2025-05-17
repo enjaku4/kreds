@@ -107,6 +107,16 @@ Kreds.show
 
 Useful for debugging or working in the Rails console.
 
+### Check key or variable existence
+
+You can check whether a key path exists in credentials or whether an environment variable is set using the following methods, which return a boolean value:
+
+```ruby
+Kreds.key?(:aws, :s3, :credentials, :access_key_id)
+Kreds.env_key?(:recaptcha, :site_key)
+Kreds.var?("AWS_ACCESS_KEY_ID")
+```
+
 ## Problems?
 
 Facing a problem or want to suggest an enhancement?
