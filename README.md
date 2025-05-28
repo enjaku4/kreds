@@ -34,99 +34,99 @@ bundle install
 
 ### Core Methods
 
-#### `Kreds.fetch!(*keys, var: nil, &block)`
+- `Kreds.fetch!(*keys, var: nil, &block)`
 
-Fetches credentials from the Rails credentials store.
+  Fetches credentials from the Rails credentials store.
 
-**Parameters:**
-- `*keys` - Variable number of symbols representing the key path
-- `var` - Optional environment variable name as fallback
-- `&block` - Optional block to execute if fetch fails
+  **Parameters:**
+  - `*keys` - Variable number of symbols representing the key path
+  - `var` - Optional environment variable name as fallback
+  - `&block` - Optional block to execute if fetch fails
 
-**Returns:** The credential value
+  **Returns:** The credential value
 
-**Raises:**
-- `Kreds::UnknownCredentialsError` - if the key path doesn’t exist
-- `Kreds::BlankCredentialsError` - if the value exists but is blank
+  **Raises:**
+  - `Kreds::UnknownCredentialsError` - if the key path doesn’t exist
+  - `Kreds::BlankCredentialsError` - if the value exists but is blank
 
-**Examples:**
-```ruby
-# Basic usage
-Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
+  **Examples:**
+  ```ruby
+  # Basic usage
+  Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
 
-# With environment variable fallback
-Kreds.fetch!(:aws, :access_key_id, var: "AWS_ACCESS_KEY_ID")
+  # With environment variable fallback
+  Kreds.fetch!(:aws, :access_key_id, var: "AWS_ACCESS_KEY_ID")
 
-# With custom error handling
-Kreds.fetch!(:api_key) do
-  raise MyCustomError, "API key not configured"
-end
-```
+  # With custom error handling
+  Kreds.fetch!(:api_key) do
+    raise MyCustomError, "API key not configured"
+  end
+  ```
 
-#### `Kreds.env_fetch!(*keys, var: nil, &block)`
+- `Kreds.env_fetch!(*keys, var: nil, &block)`
 
-Fetches credentials scoped by the current Rails environment (e.g., `:production`, `:staging`, `:development`).
+  Fetches credentials scoped by the current Rails environment (e.g., `:production`, `:staging`, `:development`).
 
-**Parameters:** Same as `fetch!`
+  **Parameters:** Same as `fetch!`
 
-**Returns:** The credential value from `Rails.application.credentials[Rails.env]` followed by the provided key path
+  **Returns:** The credential value from `Rails.application.credentials[Rails.env]` followed by the provided key path
 
-**Raises:** Same exceptions as `fetch!`
+  **Raises:** Same exceptions as `fetch!`
 
-**Examples:**
-```ruby
-# Looks in credentials[:production][:recaptcha][:site_key] in production
-Kreds.env_fetch!(:recaptcha, :site_key)
+  **Examples:**
+  ```ruby
+  # Looks in credentials[:production][:recaptcha][:site_key] in production
+  Kreds.env_fetch!(:recaptcha, :site_key)
 
-# With fallback
-Kreds.env_fetch!(:recaptcha, :site_key, var: "RECAPTCHA_SITE_KEY")
-```
+  # With fallback
+  Kreds.env_fetch!(:recaptcha, :site_key, var: "RECAPTCHA_SITE_KEY")
+  ```
 
-#### `Kreds.var!(name, &block)`
+- `Kreds.var!(name, &block)`
 
-Fetches a value directly from environment variables.
+  Fetches a value directly from environment variables.
 
-**Parameters:**
-- `name` - Environment variable name (string)
-- `&block` - Optional block to execute if variable is missing/blank
+  **Parameters:**
+  - `name` - Environment variable name (string)
+  - `&block` - Optional block to execute if variable is missing/blank
 
-**Returns:** The environment variable value
+  **Returns:** The environment variable value
 
-**Raises:**
-- `Kreds::UnknownEnvironmentVariableError` - if the variable doesn't exist
-- `Kreds::BlankEnvironmentVariableError` - if the variable exists but is blank
+  **Raises:**
+  - `Kreds::UnknownEnvironmentVariableError` - if the variable doesn't exist
+  - `Kreds::BlankEnvironmentVariableError` - if the variable exists but is blank
 
-**Example:**
-```ruby
-Kreds.var!("AWS_ACCESS_KEY_ID")
+  **Example:**
+  ```ruby
+  Kreds.var!("AWS_ACCESS_KEY_ID")
 
-# With default value
-Kreds.var!("THREADS") { 1 }
-```
+  # With default value
+  Kreds.var!("THREADS") { 1 }
+  ```
 
 ### Utility Methods
 
-#### `Kreds.show`
+- `Kreds.show`
 
-**Returns:** All credentials as a hash. Useful for debugging or working in the Rails console.
+  **Returns:** All credentials as a hash. Useful for debugging or working in the Rails console.
 
-#### `Kreds.key?(*keys)`
+- `Kreds.key?(*keys)`
 
-Checks if a key path exists in credentials.
+  Checks if a key path exists in credentials.
 
-**Returns:** Boolean
+  **Returns:** Boolean
 
-#### `Kreds.env_key?(*keys)`
+- `Kreds.env_key?(*keys)`
 
-Checks if a key path exists in environment-scoped credentials.
+  Checks if a key path exists in environment-scoped credentials.
 
-**Returns:** Boolean
+  **Returns:** Boolean
 
-#### `Kreds.var?(name)`
+- `Kreds.var?(name)`
 
-Checks if an environment variable is set.
+  Checks if an environment variable is set.
 
-**Returns:** Boolean
+  **Returns:** Boolean
 
 ## Contributing
 
