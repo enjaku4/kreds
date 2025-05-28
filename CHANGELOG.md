@@ -1,3 +1,7 @@
+## v1.2.1
+
+- Added input validation using `dry-types` for user-facing API
+
 ## v1.2.0
 
 - Added `Kreds.key?` for checking if a key path exists in credentials

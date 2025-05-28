@@ -5,6 +5,7 @@ gemspec
 rails_version = ENV.fetch("RAILS_VERSION", "~> 7")
 
 gem "byebug"
+gem "dry-types"
 gem "grepfruit"
 gem "rails", rails_version
 gem "rake"

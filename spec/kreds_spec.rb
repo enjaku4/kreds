@@ -27,7 +27,7 @@ RSpec.describe Kreds do
         let(:var) { nil }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "No keys provided")
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "[] violates constraints (min_size?(1, []) failed)")
         end
       end
 
@@ -36,16 +36,16 @@ RSpec.describe Kreds do
         let(:var) { nil }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method (`|')to_sym' for (42:|an instance of )Integer/)
         end
       end
 
       context "when var is not a string" do
-        let(:args) { [:foo, :bar, :baz] }
+        let(:args) { [:foo, :bar, :bad] }
         let(:var) { 42 }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "42 violates constraints (type?(String, 42) failed)")
         end
       end
     end
@@ -198,7 +198,7 @@ RSpec.describe Kreds do
         let(:var) { nil }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method (`|')to_sym' for (42:|an instance of )Integer/)
         end
       end
 
@@ -207,7 +207,7 @@ RSpec.describe Kreds do
         let(:var) { 42 }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "42 violates constraints (type?(String, 42) failed)")
         end
       end
     end
@@ -319,11 +319,19 @@ RSpec.describe Kreds do
   describe ".var!" do
     subject { described_class.var!(var) }
 
+    context "when no var is provided" do
+      let(:var) { nil }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "nil violates constraints (type?(String, nil) failed)")
+      end
+    end
+
     context "when var is not a string" do
       let(:var) { 42 }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "42 violates constraints (type?(String, 42) failed)")
       end
     end
 
@@ -368,7 +376,7 @@ RSpec.describe Kreds do
       let(:args) { [] }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "No keys provided")
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "[] violates constraints (min_size?(1, []) failed)")
       end
     end
 
@@ -376,7 +384,7 @@ RSpec.describe Kreds do
       let(:args) { [:foo, 42] }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method (`|')to_sym' for (42:|an instance of )Integer/)
       end
     end
 
@@ -420,7 +428,7 @@ RSpec.describe Kreds do
       let(:args) { [:foo, 42] }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Credentials Key must be a Symbol or a String")
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method (`|')to_sym' for (42:|an instance of )Integer/)
       end
     end
 
@@ -454,11 +462,19 @@ RSpec.describe Kreds do
   describe ".var?" do
     subject { described_class.var?(var) }
 
+    context "when no var is provided" do
+      let(:var) { nil }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "nil violates constraints (type?(String, nil) failed)")
+      end
+    end
+
     context "when var is not a string" do
       let(:var) { 42 }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "Environment variable must be a String")
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "42 violates constraints (type?(String, 42) failed)")
       end
     end
 

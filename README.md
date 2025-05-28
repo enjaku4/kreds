@@ -3,16 +3,14 @@
 [![Gem Version](https://badge.fury.io/rb/kreds.svg)](http://badge.fury.io/rb/kreds)
 [![Github Actions badge](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml)
 
-Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few additional features built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive — that’s where Kreds comes in.
+Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few extra features built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive — that's where Kreds comes in.
 
 Instead of writing:
-
 ```ruby
 Rails.application.credentials[:recaptcha][:site_key]
 ```
 
 You can simply use:
-
 ```ruby
 Kreds.fetch!(:recaptcha, :site_key)
 ```
@@ -28,107 +26,116 @@ gem "kreds"
 ```
 
 And then execute:
-
-```shell
+```bash
 bundle install
 ```
 
-## Usage
+## API Reference
 
-### Fetch from credentials
+### Core Methods
 
-```ruby
-Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
-```
+- `Kreds.fetch!(*keys, var: nil, &block)`
 
-If you make a typo, such as writing `access_key` instead of `access_key_id`, Kreds will raise `Kreds::UnknownCredentialsError` with the message: `Credentials key not found: [:aws][:s3][:credentials][:access_key]`.
+  Fetches credentials from the Rails credentials store.
 
-Similarly, if you add an extra key that doesn’t exist: `Kreds.fetch!(:aws, :s3, :credentials, :access_key_id, :id)`, Kreds will raise `Kreds::UnknownCredentialsError` with the message: `Credentials key not found: [:aws][:s3][:credentials][:access_key_id][:id]`.
+  **Parameters:**
+  - `*keys` - Variable number of symbols representing the key path
+  - `var` - Optional environment variable name as fallback
+  - `&block` - Optional block to execute if fetch fails
 
-If all keys are correct but the value is blank, Kreds will raise `Kreds::BlankCredentialsError` with the message: `Blank value in credentials: [:aws][:s3][:credentials][:access_key_id]`.
+  **Returns:** The credential value
 
-### Fallback to environment variables
+  **Raises:**
+  - `Kreds::UnknownCredentialsError` - if the key path doesn’t exist
+  - `Kreds::BlankCredentialsError` - if the value exists but is blank
 
-You can optionally provide a fallback environment variable:
+  **Examples:**
+  ```ruby
+  # Basic usage
+  Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
 
-```ruby
-Kreds.fetch!(:aws, :s3, :credentials, :access_key_id, var: "AWS_ACCESS_KEY_ID")
-```
+  # With environment variable fallback
+  Kreds.fetch!(:aws, :access_key_id, var: "AWS_ACCESS_KEY_ID")
 
-If the key is missing or blank in credentials, Kreds will attempt to fetch the value from the specified environment variable.
+  # With custom error handling
+  Kreds.fetch!(:api_key) do
+    raise MyCustomError, "API key not configured"
+  end
+  ```
 
-If both sources are missing or blank, a combined error is raised.
+- `Kreds.env_fetch!(*keys, var: nil, &block)`
 
-### Directly fetch from environment variable
+  Fetches credentials scoped by the current Rails environment (e.g., `:production`, `:staging`, `:development`).
 
-You can also fetch directly from an environment variable:
+  **Parameters:** Same as `fetch!`
 
-```ruby
-Kreds.var!("AWS_ACCESS_KEY_ID")
-```
+  **Returns:** The credential value from `Rails.application.credentials[Rails.env]` followed by the provided key path
 
-This raises `Kreds::UnknownEnvironmentVariableError` if the variable is missing, and `Kreds::BlankEnvironmentVariableError` if it is present but the value is blank.
+  **Raises:** Same exceptions as `fetch!`
 
-### Fetch per Rails environment
+  **Examples:**
+  ```ruby
+  # Looks in credentials[:production][:recaptcha][:site_key] in production
+  Kreds.env_fetch!(:recaptcha, :site_key)
 
-If your credentials are scoped by Rails environment (e.g., `:production`, `:staging`, `:development`), you can fetch keys under the current environment using:
+  # With fallback
+  Kreds.env_fetch!(:recaptcha, :site_key, var: "RECAPTCHA_SITE_KEY")
+  ```
 
-```ruby
-Kreds.env_fetch!(:recaptcha, :site_key)
-```
+- `Kreds.var!(name, &block)`
 
-This will look for the key in `Rails.application.credentials[Rails.env]`. For example, in the `production` environment, it will look for `Rails.application.credentials[:production][:recaptcha][:site_key]`, and raise the same errors if the key is missing or the value is blank.
+  Fetches a value directly from environment variables.
 
-You can also provide an optional fallback environment variable:
+  **Parameters:**
+  - `name` - Environment variable name (string)
+  - `&block` - Optional block to execute if variable is missing/blank
 
-```ruby
-Kreds.env_fetch!(:recaptcha, :site_key, var: "RECAPTCHA_SITE_KEY")
-```
+  **Returns:** The environment variable value
 
-### Pass a block on failure
+  **Raises:**
+  - `Kreds::UnknownEnvironmentVariableError` - if the variable doesn't exist
+  - `Kreds::BlankEnvironmentVariableError` - if the variable exists but is blank
 
-You can pass a block to `fetch!`, `env_fetch!`, and `var!`, which will be executed if the method fails to retrieve the value.
+  **Example:**
+  ```ruby
+  Kreds.var!("AWS_ACCESS_KEY_ID")
 
-```ruby
-Kreds.fetch!(:aws, :s3, :credentials, :access_key_id) do
-  raise MyCustomError, "Custom error message"
-end
+  # With default value
+  Kreds.var!("THREADS") { 1 }
+  ```
 
-Kreds.var!("THREADS") { 1 }
-```
+### Utility Methods
 
-### Show credentials
+- `Kreds.show`
 
-To inspect all credentials as a hash:
+  **Returns:** All credentials as a hash. Useful for debugging or working in the Rails console.
 
-```ruby
-Kreds.show
-```
+- `Kreds.key?(*keys)`
 
-Useful for debugging or working in the Rails console.
+  Checks if a key path exists in credentials.
 
-### Check key or variable existence
+  **Returns:** Boolean
 
-You can check whether a key path exists in credentials or whether an environment variable is set using the following methods, which return a boolean value:
+- `Kreds.env_key?(*keys)`
 
-```ruby
-Kreds.key?(:aws, :s3, :credentials, :access_key_id)
-Kreds.env_key?(:recaptcha, :site_key)
-Kreds.var?("AWS_ACCESS_KEY_ID")
-```
+  Checks if a key path exists in environment-scoped credentials.
 
-## Problems?
+  **Returns:** Boolean
 
-Facing a problem or want to suggest an enhancement?
+- `Kreds.var?(name)`
 
-- **Open a Discussion**: If you have a question, experience difficulties using the gem, or have a suggestion for improvements, feel free to use the Discussions section.
+  Checks if an environment variable is set.
 
-Encountered a bug?
-
-- **Create an Issue**: If you've identified a bug, please create an issue. Be sure to provide detailed information about the problem, including the steps to reproduce it.
-- **Contribute a Solution**: Found a fix for the issue? Feel free to create a pull request with your changes.
+  **Returns:** Boolean
 
 ## Contributing
+
+### Getting Help
+- **Open a Discussion:** If you have a question, experience difficulties using the gem, or have a suggestion for improvements, feel free to use the Discussions section.
+
+### Reporting Bugs
+- **Create an Issue:** If you've identified a bug, please create an issue. Be sure to provide detailed information about the problem, including the steps to reproduce it.
+- **Contribute a Solution:** Found a fix for the issue? Feel free to create a pull request with your changes.
 
 Before creating an issue or a pull request, please read the [contributing guidelines](https://github.com/brownboxdev/kreds/blob/master/CONTRIBUTING.md).
 
