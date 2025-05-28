@@ -36,7 +36,7 @@ RSpec.describe Kreds do
         let(:var) { nil }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "undefined method `to_sym' for 42:Integer")
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method `to_sym' for (42:|an instance of )Integer/)
         end
       end
 
@@ -198,7 +198,7 @@ RSpec.describe Kreds do
         let(:var) { nil }
 
         it "raises error" do
-          expect { subject }.to raise_error(Kreds::InvalidArgumentError, "undefined method `to_sym' for 42:Integer")
+          expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method `to_sym' for (42:|an instance of )Integer/)
         end
       end
 
@@ -384,7 +384,7 @@ RSpec.describe Kreds do
       let(:args) { [:foo, 42] }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "undefined method `to_sym' for 42:Integer")
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method `to_sym' for (42:|an instance of )Integer/)
       end
     end
 
@@ -428,7 +428,7 @@ RSpec.describe Kreds do
       let(:args) { [:foo, 42] }
 
       it "raises error" do
-        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "undefined method `to_sym' for 42:Integer")
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, /undefined method `to_sym' for (42:|an instance of )Integer/)
       end
     end
 
