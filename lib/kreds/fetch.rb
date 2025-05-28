@@ -1,31 +1,24 @@
-require_relative "validations"
-
 module Kreds
   module Fetch
-    include Validations
-
     def fetch!(*keys, var: nil, &)
-      validate_keys!(keys)
-      validate_var!(var)
+      symbolized_keys = Kreds::Inputs.process(keys, as: :symbol_array)
 
       path = []
 
-      keys.reduce(Kreds.show) do |hash, key|
+      symbolized_keys.reduce(Kreds.show) do |hash, key|
         path << key
-        fetch_key(hash, key, path, keys)
+        fetch_key(hash, key, path, symbolized_keys)
       end
     rescue Kreds::BlankCredentialsError, Kreds::UnknownCredentialsError => e
-      fallback_to_var(e, var, &)
+      fallback_to_var(e, Kreds::Inputs.process(var, as: :string, optional: true), &)
     end
 
     def env_fetch!(*keys, var: nil, &)
-      fetch!(Rails.env, *keys, var: var, &)
+      fetch!(Rails.env, *keys, var:, &)
     end
 
     def var!(var, &)
-      validate_var!(var)
-
-      result, success = check_var(var)
+      result, success = check_var(Kreds::Inputs.process(var, as: :string))
 
       return result if success
 
@@ -35,7 +28,7 @@ module Kreds
     private
 
     def fetch_key(hash, key, path, keys)
-      value = hash.fetch(key.to_sym)
+      value = hash.fetch(key)
 
       raise Kreds::BlankCredentialsError, "Blank value in credentials: [:#{path.join("][:")}]" if value.blank?
       raise Kreds::UnknownCredentialsError, "Credentials key not found: [:#{path.join("][:")}][:#{keys[path.size]}]" if !value.is_a?(Hash) && keys != path

@@ -2,6 +2,7 @@ require_relative "kreds/version"
 
 require "rails"
 
+require_relative "kreds/inputs"
 require_relative "kreds/check"
 require_relative "kreds/fetch"
 require_relative "kreds/show"
