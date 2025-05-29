@@ -115,10 +115,10 @@ Fetches a value directly from environment variables with validation.
 
 ```ruby
 # Direct environment variable access
-aws_key = Kreds.var!("AWS_ACCESS_KEY_ID")
+Kreds.var!("AWS_ACCESS_KEY_ID")
 
 # With block
-thread_count = Kreds.var!("THREADS") { 1 }
+Kreds.var!("THREADS") { 1 }
 ```
 
 ## Utility Methods
