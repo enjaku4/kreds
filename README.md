@@ -1,143 +1,173 @@
-# Kreds
+# Kreds: Streamlined Rails Credentials Access
 
 [![Gem Version](https://badge.fury.io/rb/kreds.svg)](http://badge.fury.io/rb/kreds)
 [![Github Actions badge](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml)
 
 Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few extra features built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive — that's where Kreds comes in.
 
-Instead of writing:
-```ruby
-Rails.application.credentials[:recaptcha][:site_key]
-```
+**Key Features:**
 
-You can simply use:
+- Simplified credential access with clear error messages
+- Environment variable fallback support
+- Environment-scoped credentials (production, staging, development)
+- Automatic blank value detection and prevention
+
+**Before and After:**
+
 ```ruby
+# Instead of this (silent failures, unclear errors):
+Rails.application.credentials[:recaptcha][:site_key]
+
+# You can write this (shorter + human-readable errors):
 Kreds.fetch!(:recaptcha, :site_key)
 ```
 
-This not only shortens your code but also ensures an exception is raised if a key is missing or a value is blank — with a clear, human-readable error message.
+## Table of Contents
+
+**Gem Usage:**
+  - [Installation](#installation)
+  - [Core Methods](#core-methods)
+  - [Utility Methods](#utility-methods)
+
+**Community Resources:**
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Code of Conduct](#code-of-conduct)
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add Kreds to your Gemfile:
 
 ```ruby
 gem "kreds"
 ```
 
 And then execute:
+
 ```bash
 bundle install
 ```
 
-## API Reference
+## Core Methods
 
-### Core Methods
+### Credential Fetching
 
-- `Kreds.fetch!(*keys, var: nil, &block)`
+**`Kreds.fetch!(*keys, var: nil, &block)`**
 
-  Fetches credentials from the Rails credentials store.
+Fetches credentials from the Rails credentials store with automatic error handling.
 
-  **Parameters:**
-  - `*keys` - Variable number of symbols representing the key path
-  - `var` - Optional environment variable name as fallback
-  - `&block` - Optional block to execute if fetch fails
+**Parameters:**
+- `*keys` - Variable number of symbols representing the key path
+- `var` - Optional environment variable name as fallback
+- `&block` - Optional block to execute if fetch fails
 
-  **Returns:** The credential value
+**Returns:** The credential value
 
-  **Raises:**
-  - `Kreds::UnknownCredentialsError` - if the key path doesn’t exist
-  - `Kreds::BlankCredentialsError` - if the value exists but is blank
+**Raises:**
+- `Kreds::UnknownCredentialsError` - if the key path doesn't exist
+- `Kreds::BlankCredentialsError` - if the value exists but is blank
 
-  **Examples:**
-  ```ruby
-  # Basic usage
-  Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
+```ruby
+# Basic usage
+Kreds.fetch!(:aws, :s3, :credentials, :access_key_id)
 
-  # With environment variable fallback
-  Kreds.fetch!(:aws, :access_key_id, var: "AWS_ACCESS_KEY_ID")
+# With environment variable fallback
+Kreds.fetch!(:aws, :access_key_id, var: "AWS_ACCESS_KEY_ID")
 
-  # With custom error handling
-  Kreds.fetch!(:api_key) do
-    raise MyCustomError, "API key not configured"
-  end
-  ```
+# With block
+Kreds.fetch!(:api_key) do
+  raise MyCustomError, "API key not configured"
+end
+```
 
-- `Kreds.env_fetch!(*keys, var: nil, &block)`
+### Environment-Scoped Credentials
 
-  Fetches credentials scoped by the current Rails environment (e.g., `:production`, `:staging`, `:development`).
+**`Kreds.env_fetch!(*keys, var: nil, &block)`**
 
-  **Parameters:** Same as `fetch!`
+Fetches credentials scoped by the current Rails environment (e.g., `:production`, `:staging`, `:development`).
 
-  **Returns:** The credential value from `Rails.application.credentials[Rails.env]` followed by the provided key path
+**Parameters:** Same as `fetch!`
 
-  **Raises:** Same exceptions as `fetch!`
+**Returns:** The credential value from `Rails.application.credentials[Rails.env]` followed by the provided key path
 
-  **Examples:**
-  ```ruby
-  # Looks in credentials[:production][:recaptcha][:site_key] in production
-  Kreds.env_fetch!(:recaptcha, :site_key)
+**Raises:** Same exceptions as `fetch!`
 
-  # With fallback
-  Kreds.env_fetch!(:recaptcha, :site_key, var: "RECAPTCHA_SITE_KEY")
-  ```
+```ruby
+# Looks in credentials[:production][:recaptcha][:site_key] in production
+Kreds.env_fetch!(:recaptcha, :site_key)
+```
 
-- `Kreds.var!(name, &block)`
+### Environment Variables
 
-  Fetches a value directly from environment variables.
+**`Kreds.var!(name, &block)`**
 
-  **Parameters:**
-  - `name` - Environment variable name (string)
-  - `&block` - Optional block to execute if variable is missing/blank
+Fetches a value directly from environment variables with validation.
 
-  **Returns:** The environment variable value
+**Parameters:**
+- `name` - Environment variable name
+- `&block` - Optional block to execute if variable is missing/blank
 
-  **Raises:**
-  - `Kreds::UnknownEnvironmentVariableError` - if the variable doesn't exist
-  - `Kreds::BlankEnvironmentVariableError` - if the variable exists but is blank
+**Returns:** The environment variable value
 
-  **Example:**
-  ```ruby
-  Kreds.var!("AWS_ACCESS_KEY_ID")
+**Raises:**
+- `Kreds::UnknownEnvironmentVariableError` - if the variable doesn't exist
+- `Kreds::BlankEnvironmentVariableError` - if the variable exists but is blank
 
-  # With default value
-  Kreds.var!("THREADS") { 1 }
-  ```
+```ruby
+# Direct environment variable access
+aws_key = Kreds.var!("AWS_ACCESS_KEY_ID")
 
-### Utility Methods
+# With block
+thread_count = Kreds.var!("THREADS") { 1 }
+```
 
-- `Kreds.show`
+## Utility Methods
 
-  **Returns:** All credentials as a hash. Useful for debugging or working in the Rails console.
+### Credential Existence Checking
 
-- `Kreds.key?(*keys)`
+```ruby
+# Check if a credential path exists
+Kreds.key?(:aws, :access_key_id)
+# => true/false
 
-  Checks if a key path exists in credentials.
+# Check environment-scoped credentials
+Kreds.env_key?(:recaptcha, :site_key)
+# => true/false
 
-  **Returns:** Boolean
+# Check environment variables
+Kreds.var?("DATABASE_URL")
+# => true/false
+```
 
-- `Kreds.env_key?(*keys)`
+### Debug and Inspection
 
-  Checks if a key path exists in environment-scoped credentials.
-
-  **Returns:** Boolean
-
-- `Kreds.var?(name)`
-
-  Checks if an environment variable is set.
-
-  **Returns:** Boolean
+```ruby
+# View all credentials (useful in Rails console)
+Kreds.show
+# => { aws: { access_key_id: "...", secret_access_key: "..." }, ... }
+```
 
 ## Contributing
 
 ### Getting Help
-- **Open a Discussion:** If you have a question, experience difficulties using the gem, or have a suggestion for improvements, feel free to use the Discussions section.
+Have a question or need assistance? Open a discussion in our [discussions section](https://github.com/brownboxdev/kreds/discussions) for:
+- Usage questions
+- Implementation guidance
+- Feature suggestions
 
-### Reporting Bugs
-- **Create an Issue:** If you've identified a bug, please create an issue. Be sure to provide detailed information about the problem, including the steps to reproduce it.
-- **Contribute a Solution:** Found a fix for the issue? Feel free to create a pull request with your changes.
+### Reporting Issues
+Found a bug? Please [create an issue](https://github.com/brownboxdev/kreds/issues) with:
+- A clear description of the problem
+- Steps to reproduce the issue
+- Your environment details (Rails version, Ruby version, etc.)
 
-Before creating an issue or a pull request, please read the [contributing guidelines](https://github.com/brownboxdev/kreds/blob/master/CONTRIBUTING.md).
+### Contributing Code
+Ready to contribute? You can:
+- Fix bugs by submitting pull requests
+- Improve documentation
+- Add new features (please discuss first in our [discussions section](https://github.com/brownboxdev/kreds/discussions))
+
+Before contributing, please read the [contributing guidelines](https://github.com/brownboxdev/kreds/blob/master/CONTRIBUTING.md)
 
 ## License
 
