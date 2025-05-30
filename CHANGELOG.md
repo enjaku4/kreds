@@ -1,6 +1,6 @@
 ## v1.2.2
 
-- Enhanced utility methods (`key?`, `env_key?`, `var?`) with optional `check_blank` parameter to validate values
+- Enhanced utility methods (`key?`, `env_key?`, `var?`) with optional `check_value` parameter to validate values
 
 ## v1.2.1
 
