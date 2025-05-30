@@ -131,7 +131,7 @@ Kreds.key?(:aws, :access_key_id)
 # => true/false
 
 # Check if credential exists AND has a non-blank value
-Kreds.key?(:aws, :access_key_id, check_blank: true)
+Kreds.key?(:aws, :access_key_id, check_value: true)
 # => true/false
 
 # Check environment-scoped credentials
@@ -139,7 +139,7 @@ Kreds.env_key?(:recaptcha, :site_key)
 # => true/false
 
 # Check environment-scoped credentials with value validation
-Kreds.env_key?(:recaptcha, :site_key, check_blank: true)
+Kreds.env_key?(:recaptcha, :site_key, check_value: true)
 # => true/false
 
 # Check environment variables
@@ -147,7 +147,7 @@ Kreds.var?("DATABASE_URL")
 # => true/false
 
 # Check environment variables with value validation
-Kreds.var?("DATABASE_URL", check_blank: true)
+Kreds.var?("DATABASE_URL", check_value: true)
 # => true/false
 ```
 
