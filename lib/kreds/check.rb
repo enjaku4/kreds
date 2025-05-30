@@ -18,7 +18,7 @@ module Kreds
 
     def var?(var, check_value: false)
       presence = ENV.key?(Kreds::Inputs.process(var, as: :string))
-      check_value ? presence && ENV[var].present? : presence
+      Kreds::Inputs.process(check_value, as: :boolean) ? presence && ENV[var].present? : presence
     end
   end
 end

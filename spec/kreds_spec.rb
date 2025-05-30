@@ -435,6 +435,16 @@ RSpec.describe Kreds do
         it { is_expected.to be false }
       end
     end
+
+    context "when check_value is not boolean" do
+      subject { described_class.key?(*args, check_value: "not_a_boolean") }
+
+      let(:args) { [:foo, :bar, :baz] }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "\"not_a_boolean\" violates constraints (type?(FalseClass, \"not_a_boolean\") failed)")
+      end
+    end
   end
 
   describe ".env_key?" do
@@ -449,6 +459,14 @@ RSpec.describe Kreds do
       end
 
       it { is_expected.to be true }
+    end
+
+    context "when check_value is not boolean" do
+      subject { described_class.env_key?(:foo, check_value: "not_a_boolean") }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "\"not_a_boolean\" violates constraints (type?(FalseClass, \"not_a_boolean\") failed)")
+      end
     end
 
     context "when no keys are provided" do
@@ -545,6 +563,16 @@ RSpec.describe Kreds do
         let(:var) { "MISSING_ENV_VAR" }
 
         it { is_expected.to be false }
+      end
+    end
+
+    context "when check_value is not boolean" do
+      subject { described_class.var?(var, check_value: "not_a_boolean") }
+
+      let(:var) { "RAILS_ENV" }
+
+      it "raises error" do
+        expect { subject }.to raise_error(Kreds::InvalidArgumentError, "\"not_a_boolean\" violates constraints (type?(FalseClass, \"not_a_boolean\") failed)")
       end
     end
   end
