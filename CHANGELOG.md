@@ -1,3 +1,7 @@
+## v1.2.2
+
+- Enhanced utility methods (`key?`, `env_key?`, `var?`) with optional `check_blank` parameter to validate values
+
 ## v1.2.1
 
 - Added input validation using `dry-types` for user-facing API
