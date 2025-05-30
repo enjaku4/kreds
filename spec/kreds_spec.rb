@@ -413,10 +413,43 @@ RSpec.describe Kreds do
 
       it { is_expected.to be false }
     end
+
+    context "when check_value is true" do
+      subject { described_class.key?(*args, check_value: true) }
+
+      context "when the key exists and is not blank" do
+        let(:args) { [:foo, :bar, :baz] }
+
+        it { is_expected.to be true }
+      end
+
+      context "when the key exists but is blank" do
+        let(:args) { [:bad] }
+
+        it { is_expected.to be false }
+      end
+
+      context "when the key does not exist" do
+        let(:args) { [:foo, :bar, :bad] }
+
+        it { is_expected.to be false }
+      end
+    end
   end
 
   describe ".env_key?" do
     subject { described_class.env_key?(*args) }
+
+    context "when check_value is true" do
+      subject { described_class.env_key?(:foo, check_value: true) }
+
+      it "delegates to .key?" do
+        expect(described_class).to receive(:key?).with("test", :foo, check_value: true).and_call_original
+        subject
+      end
+
+      it { is_expected.to be true }
+    end
 
     context "when no keys are provided" do
       let(:args) { [] }
@@ -488,6 +521,31 @@ RSpec.describe Kreds do
       let(:var) { "MISSING_ENV_VAR" }
 
       it { is_expected.to be false }
+    end
+
+    context "when check_value is true" do
+      subject { described_class.var?(var, check_value: true) }
+
+      context "when the environment variable exists and is not blank" do
+        let(:var) { "RAILS_ENV" }
+
+        it { is_expected.to be true }
+      end
+
+      context "when the environment variable exists but is blank" do
+        let(:var) { "BLANK_ENV_VAR" }
+
+        before { ENV["BLANK_ENV_VAR"] = "" }
+        after { ENV.delete("BLANK_ENV_VAR") }
+
+        it { is_expected.to be false }
+      end
+
+      context "when the environment variable is missing" do
+        let(:var) { "MISSING_ENV_VAR" }
+
+        it { is_expected.to be false }
+      end
     end
   end
 end
