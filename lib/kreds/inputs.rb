@@ -19,5 +19,6 @@ module Kreds
 
     def symbol_array = self::Array.of(self::Coercible::Symbol).constrained(min_size: 1)
     def string = self::Strict::String
+    def boolean = self::Strict::Bool
   end
 end
