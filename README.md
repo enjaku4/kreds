@@ -15,11 +15,23 @@ Kreds is a simpler, shorter, and safer way to access Rails credentials, with a f
 **Before and After:**
 
 ```ruby
-# Instead of this (silent failures, unclear errors):
+# Instead of this (long, silent failures if value is missing):
 Rails.application.credentials[:recaptcha][:site_key]
+# => nil
 
-# You can write this (shorter + human-readable errors):
+# Or this (long, unclear errors):
+Rails.application.credentials[:captcha][:site_key]
+# => undefined method `[]' for nil:NilClass (NoMethodError)
+
+# Or even this (longer, still unclear errors):
+Rails.application.credentials.fetch(:recaptcha).fetch(:key)
+# => key not found: :key (KeyError)
+
+# You can write this (shorter, human-readable errors):
 Kreds.fetch!(:recaptcha, :site_key)
+# => Blank value in credentials: [:recaptcha][:site_key] (Kreds::BlankCredentialsError)
+Kreds.fetch!(:captcha, :site_key)
+# => Credentials key not found: [:captcha] (Kreds::UnknownCredentialsError)
 ```
 
 ## Table of Contents
@@ -54,7 +66,7 @@ bundle install
 
 **`Kreds.fetch!(*keys, var: nil, &block)`**
 
-Fetches credentials from the Rails credentials store with automatic error handling.
+Fetches credentials from the Rails credentials store.
 
 **Parameters:**
 - `*keys` - Variable number of symbols representing the key path
@@ -101,7 +113,7 @@ Kreds.env_fetch!(:recaptcha, :site_key)
 
 **`Kreds.var!(name, &block)`**
 
-Fetches a value directly from environment variables with validation.
+Fetches a value directly from environment variables.
 
 **Parameters:**
 - `name` - Environment variable name
