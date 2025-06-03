@@ -18,11 +18,13 @@ module Kreds
     end
 
     def var!(var, &)
-      result, success = check_var(Kreds::Inputs.process(var, as: :string))
+      value = ENV.fetch(Kreds::Inputs.process(var, as: :string))
 
-      return result if success
+      return raise_or_yield(Kreds::BlankEnvironmentVariableError.new("Blank value in environment variable: #{var.inspect}"), &) if value.blank?
 
-      raise_or_yield(result, &)
+      value
+    rescue KeyError
+      raise_or_yield(Kreds::UnknownEnvironmentVariableError.new("Environment variable not found: #{var.inspect}"), &)
     end
 
     private
@@ -30,38 +32,28 @@ module Kreds
     def fetch_key(hash, key, path, keys)
       value = hash.fetch(key)
 
-      raise Kreds::BlankCredentialsError, "Blank value in credentials: [:#{path.join("][:")}]" if value.blank?
-      raise Kreds::UnknownCredentialsError, "Credentials key not found: [:#{path.join("][:")}][:#{keys[path.size]}]" if !value.is_a?(Hash) && keys != path
+      raise Kreds::BlankCredentialsError, "Blank value in credentials: #{path_to_s(path)}" if value.blank?
+      raise Kreds::UnknownCredentialsError, "Credentials key not found: #{path_to_s(path)}[:#{keys[path.size]}]" unless value.is_a?(Hash) || keys == path
 
       value
     rescue KeyError
-      raise Kreds::UnknownCredentialsError, "Credentials key not found: [:#{path.join("][:")}]"
+      raise Kreds::UnknownCredentialsError, "Credentials key not found: #{path_to_s(path)}"
     end
 
     def fallback_to_var(error, var, &)
-      if var.present?
-        result, success = check_var(var)
+      return raise_or_yield(error, &) if var.blank?
 
-        return result if success
-
-        raise_or_yield(Kreds::Error.new([error.message, result.message].join(", ")), &)
-      end
-
-      raise_or_yield(error, &)
-    end
-
-    def check_var(var)
-      value = ENV.fetch(var)
-
-      return [Kreds::BlankEnvironmentVariableError.new("Blank value in environment variable: #{var.inspect}"), false] if value.blank?
-
-      [value, true]
-    rescue KeyError
-      [Kreds::UnknownEnvironmentVariableError.new("Environment variable not found: #{var.inspect}"), false]
+      var!(var, &)
+    rescue Kreds::BlankEnvironmentVariableError, Kreds::UnknownEnvironmentVariableError => e
+      raise_or_yield(Kreds::Error.new("#{error.message}, #{e.message}"), &)
     end
 
     def raise_or_yield(error, &)
       block_given? ? yield : raise(error)
+    end
+
+    def path_to_s(path)
+      "[:#{path.join("][:")}]"
     end
   end
 end

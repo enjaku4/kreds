@@ -1,16 +1,7 @@
-## v1.2.2
-
-- Enhanced utility methods (`key?`, `env_key?`, `var?`) with optional `check_value` parameter to validate values
-
-## v1.2.1
+## v1.1.2
 
 - Added input validation using `dry-types` for user-facing API
-
-## v1.2.0
-
-- Added `Kreds.key?` for checking if a key path exists in credentials
-- Added `Kreds.env_key?` for checking if a key path exists in credentials under current Rails environment
-- Added `Kreds.var?` for checking if an environment variable exists
+- Internal code optimizations
 
 ## v1.1.1
 

@@ -9,7 +9,7 @@ Kreds is a simpler, shorter, and safer way to access Rails credentials, with a f
 
 - Simplified credential access with clear error messages
 - Environment variable fallback support
-- Environment-scoped credentials (production, staging, development)
+- Environment-scoped credentials access (production, staging, development)
 - Automatic blank value detection and prevention
 
 **Before and After:**
@@ -38,8 +38,10 @@ Kreds.fetch!(:captcha, :site_key)
 
 **Gem Usage:**
   - [Installation](#installation)
-  - [Core Methods](#core-methods)
-  - [Utility Methods](#utility-methods)
+  - [Credential Fetching](#credential-fetching)
+  - [Environment-Scoped Credentials](#environment-scoped-credentials)
+  - [Environment Variables](#environment-variables)
+  - [Debug and Inspection](#debug-and-inspection)
 
 **Community Resources:**
   - [Contributing](#contributing)
@@ -60,9 +62,7 @@ And then execute:
 bundle install
 ```
 
-## Core Methods
-
-### Credential Fetching
+## Credential Fetching
 
 **`Kreds.fetch!(*keys, var: nil, &block)`**
 
@@ -92,7 +92,7 @@ Kreds.fetch!(:api_key) do
 end
 ```
 
-### Environment-Scoped Credentials
+## Environment-Scoped Credentials
 
 **`Kreds.env_fetch!(*keys, var: nil, &block)`**
 
@@ -109,7 +109,7 @@ Fetches credentials scoped by the current Rails environment (e.g., `:production`
 Kreds.env_fetch!(:recaptcha, :site_key)
 ```
 
-### Environment Variables
+## Environment Variables
 
 **`Kreds.var!(name, &block)`**
 
@@ -133,40 +133,15 @@ Kreds.var!("AWS_ACCESS_KEY_ID")
 Kreds.var!("THREADS") { 1 }
 ```
 
-## Utility Methods
+## Debug and Inspection
 
-### Credential Existence Checking
+**`Kreds.show`**
 
-```ruby
-# Check if a credential path exists
-Kreds.key?(:aws, :access_key_id)
-# => true/false
+Useful for debugging and exploring available credentials in the Rails console.
 
-# Check if credential exists AND has a non-blank value
-Kreds.key?(:aws, :access_key_id, check_value: true)
-# => true/false
-
-# Check environment-scoped credentials
-Kreds.env_key?(:recaptcha, :site_key)
-# => true/false
-
-# Check environment-scoped credentials with value validation
-Kreds.env_key?(:recaptcha, :site_key, check_value: true)
-# => true/false
-
-# Check environment variables
-Kreds.var?("DATABASE_URL")
-# => true/false
-
-# Check environment variables with value validation
-Kreds.var?("DATABASE_URL", check_value: true)
-# => true/false
-```
-
-### Debug and Inspection
+**Returns:** Hash containing all credentials
 
 ```ruby
-# View all credentials (useful in Rails console)
 Kreds.show
 # => { aws: { access_key_id: "...", secret_access_key: "..." }, ... }
 ```
