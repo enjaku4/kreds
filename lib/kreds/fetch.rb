@@ -44,10 +44,10 @@ module Kreds
 
     def check_var(var, &)
       value = ENV.fetch(var) do
-        raise_or_yield(Kreds::UnknownEnvironmentVariableError.new("Environment variable not found: #{var.inspect}"), &)
+        return raise_or_yield(Kreds::UnknownEnvironmentVariableError.new("Environment variable not found: #{var.inspect}"), &)
       end
 
-      raise_or_yield(Kreds::BlankEnvironmentVariableError.new("Blank value in environment variable: #{var.inspect}"), &) if value.blank?
+      return raise_or_yield(Kreds::BlankEnvironmentVariableError.new("Blank value in environment variable: #{var.inspect}"), &) if value.blank?
 
       value
     end
