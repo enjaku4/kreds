@@ -1,6 +1,7 @@
 ## v1.1.2
 
 - Added input validation using `dry-types` for user-facing API
+- Internal performance optimizations for improved speed and stability
 
 ## v1.1.1
 
