@@ -137,7 +137,7 @@ Kreds.var!("THREADS") { 1 }
 
 **`Kreds.show`**
 
-Returns all credentials as a hash with symbolized keys. Useful for debugging and exploring available credentials in the Rails console.
+Useful for debugging and exploring available credentials in the Rails console.
 
 **Returns:** Hash containing all credentials
 
