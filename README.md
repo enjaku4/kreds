@@ -9,7 +9,7 @@ Kreds is a simpler, shorter, and safer way to access Rails credentials, with a f
 
 - Simplified credential access with clear error messages
 - Environment variable fallback support
-- Environment-scoped credentials (production, staging, development)
+- Environment-scoped credential access (production, staging, development)
 - Automatic blank value detection and prevention
 
 **Before and After:**
@@ -38,7 +38,10 @@ Kreds.fetch!(:captcha, :site_key)
 
 **Gem Usage:**
   - [Installation](#installation)
-  - [Core Methods](#core-methods)
+  - [Credential Fetching](#credential-fetching)
+  - [Environment-Scoped Credentials](#environment-scoped-credentials)
+  - [Environment Variables](#environment-variables)
+  - [Debug and Inspection](#debug-and-inspection)
 
 **Community Resources:**
   - [Contributing](#contributing)
@@ -59,9 +62,7 @@ And then execute:
 bundle install
 ```
 
-## Core Methods
-
-### Credential Fetching
+## Credential Fetching
 
 **`Kreds.fetch!(*keys, var: nil, &block)`**
 
@@ -91,7 +92,7 @@ Kreds.fetch!(:api_key) do
 end
 ```
 
-### Environment-Scoped Credentials
+## Environment-Scoped Credentials
 
 **`Kreds.env_fetch!(*keys, var: nil, &block)`**
 
@@ -108,7 +109,7 @@ Fetches credentials scoped by the current Rails environment (e.g., `:production`
 Kreds.env_fetch!(:recaptcha, :site_key)
 ```
 
-### Environment Variables
+## Environment Variables
 
 **`Kreds.var!(name, &block)`**
 
@@ -132,10 +133,15 @@ Kreds.var!("AWS_ACCESS_KEY_ID")
 Kreds.var!("THREADS") { 1 }
 ```
 
-### Debug and Inspection
+## Debug and Inspection
+
+**`Kreds.show`**
+
+Returns all credentials as a hash with symbolized keys. Useful for debugging and exploring available credentials in the Rails console.
+
+**Returns:** Hash containing all credentials
 
 ```ruby
-# View all credentials (useful in Rails console)
 Kreds.show
 # => { aws: { access_key_id: "...", secret_access_key: "..." }, ... }
 ```
