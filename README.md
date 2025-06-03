@@ -39,7 +39,6 @@ Kreds.fetch!(:captcha, :site_key)
 **Gem Usage:**
   - [Installation](#installation)
   - [Core Methods](#core-methods)
-  - [Utility Methods](#utility-methods)
 
 **Community Resources:**
   - [Contributing](#contributing)
@@ -131,36 +130,6 @@ Kreds.var!("AWS_ACCESS_KEY_ID")
 
 # With block
 Kreds.var!("THREADS") { 1 }
-```
-
-## Utility Methods
-
-### Credential Existence Checking
-
-```ruby
-# Check if a credential path exists
-Kreds.key?(:aws, :access_key_id)
-# => true/false
-
-# Check if credential exists AND has a non-blank value
-Kreds.key?(:aws, :access_key_id, check_value: true)
-# => true/false
-
-# Check environment-scoped credentials
-Kreds.env_key?(:recaptcha, :site_key)
-# => true/false
-
-# Check environment-scoped credentials with value validation
-Kreds.env_key?(:recaptcha, :site_key, check_value: true)
-# => true/false
-
-# Check environment variables
-Kreds.var?("DATABASE_URL")
-# => true/false
-
-# Check environment variables with value validation
-Kreds.var?("DATABASE_URL", check_value: true)
-# => true/false
 ```
 
 ### Debug and Inspection
