@@ -9,8 +9,8 @@ Kreds is a simpler, shorter, and safer way to access Rails credentials, with a f
 
 - Simplified credential access with clear error messages
 - Environment variable fallback support
-- Environment-scoped credentials access (production, staging, development)
-- Automatic blank value detection and prevention
+- Environment-scoped credentials access
+- Blank value detection and prevention
 
 **Before and After:**
 
