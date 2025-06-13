@@ -1,3 +1,8 @@
+## v1.1.3
+
+- Improved error messages for better clarity
+- Minor code optimizations and cleanup
+
 ## v1.1.2
 
 - Added input validation using `dry-types` for user-facing API

@@ -1,7 +1,9 @@
 module Kreds
   module Fetch
     def fetch!(*keys, var: nil, &)
-      symbolized_keys = Kreds::Inputs.process(keys, as: :symbol_array)
+      symbolized_keys = Kreds::Inputs.process(
+        keys, as: :symbol_array, message: "Expected an array of symbols or strings, got `#{keys.inspect}`"
+      )
 
       path = []
 
@@ -10,7 +12,13 @@ module Kreds
         fetch_key(hash, key, path, symbolized_keys)
       end
     rescue Kreds::BlankCredentialsError, Kreds::UnknownCredentialsError => e
-      fallback_to_var(e, Kreds::Inputs.process(var, as: :string, optional: true), &)
+      fallback_to_var(
+        e,
+        Kreds::Inputs.process(
+          var, as: :non_empty_string, optional: true, message: "Expected a non-empty string, got `#{var.inspect}`"
+        ),
+        &
+      )
     end
 
     def env_fetch!(*keys, var: nil, &)
@@ -18,7 +26,9 @@ module Kreds
     end
 
     def var!(var, &)
-      value = ENV.fetch(Kreds::Inputs.process(var, as: :string))
+      value = ENV.fetch(
+        Kreds::Inputs.process(var, as: :non_empty_string, message: "Expected a non-empty string, got `#{var.inspect}`")
+      )
 
       return raise_or_yield(Kreds::BlankEnvironmentVariableError.new("Blank value in environment variable: #{var.inspect}"), &) if value.blank?
 

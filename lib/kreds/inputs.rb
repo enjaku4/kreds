@@ -8,17 +8,17 @@ module Kreds
 
     TYPES = {
       symbol_array: -> { self::Array.of(self::Coercible::Symbol).constrained(min_size: 1) },
-      string: -> { self::Strict::String },
+      non_empty_string: -> { self::Strict::String.constrained(min_size: 1) },
       boolean: -> { self::Strict::Bool }
     }.freeze
 
-    def process(value, as:, optional: false)
+    def process(value, as:, optional: false, error: Kreds::InvalidArgumentError, message: nil)
       checker = type_for(as)
       checker = checker.optional if optional
 
       checker[value]
     rescue Dry::Types::CoercionError => e
-      raise Kreds::InvalidArgumentError, e
+      raise error, message || e.message
     end
 
     private
