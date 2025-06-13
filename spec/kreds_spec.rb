@@ -17,11 +17,13 @@ RSpec.describe Kreds do
   describe ".fetch!" do
     describe "input validation" do
       it "raises error for empty keys" do
-        expect { described_class.fetch!([]) }.to raise_error(Kreds::InvalidArgumentError, /to_sym/)
+        expect { described_class.fetch! }
+          .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[]`")
       end
 
       it "raises error for invalid key types" do
-        expect { described_class.fetch!(:foo, 42) }.to raise_error(Kreds::InvalidArgumentError, /to_sym/)
+        expect { described_class.fetch!(:foo, 42) }
+          .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[:foo, 42]`")
       end
     end
 
@@ -52,7 +54,8 @@ RSpec.describe Kreds do
 
     context "with environment variable fallback" do
       it "raises error for invalid var type when fallback is needed" do
-        expect { described_class.fetch!(:bad, var: 42) }.to raise_error(Kreds::InvalidArgumentError, /type\?\(String/)
+        expect { described_class.fetch!(:bad, var: 42) }
+          .to raise_error(Kreds::InvalidArgumentError, "Expected a non-empty string, got `42`")
       end
 
       context "when env var exists" do
@@ -124,11 +127,13 @@ RSpec.describe Kreds do
 
   describe ".env_fetch!" do
     it "raises error for invalid key types" do
-      expect { described_class.env_fetch!(:foo, 42) }.to raise_error(Kreds::InvalidArgumentError, /to_sym/)
+      expect { described_class.env_fetch!(:foo, 42) }
+        .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[\"test\", :foo, 42]`")
     end
 
     it "raises error for invalid var type when fallback is needed" do
-      expect { described_class.env_fetch!(:bad, var: 42) }.to raise_error(Kreds::InvalidArgumentError, /type\?\(String/)
+      expect { described_class.env_fetch!(:bad, var: 42) }
+        .to raise_error(Kreds::InvalidArgumentError, "Expected a non-empty string, got `42`")
     end
 
     context "without var" do
@@ -166,11 +171,11 @@ RSpec.describe Kreds do
 
   describe ".var!" do
     it "raises error for nil var" do
-      expect { described_class.var!(nil) }.to raise_error(Kreds::InvalidArgumentError, /type\?\(String/)
+      expect { described_class.var!(nil) }.to raise_error(Kreds::InvalidArgumentError, "Expected a non-empty string, got `nil`")
     end
 
     it "raises error for non-string var" do
-      expect { described_class.var!(42) }.to raise_error(Kreds::InvalidArgumentError, /type\?\(String/)
+      expect { described_class.var!(42) }.to raise_error(Kreds::InvalidArgumentError, "Expected a non-empty string, got `42`")
     end
 
     it "returns environment variable value" do
