@@ -44,7 +44,7 @@ Kreds.fetch!(:captcha, :site_key)
   - [Debug and Inspection](#debug-and-inspection)
 
 **Community Resources:**
-  - [Contributing](#contributing)
+  - [Getting Help and Contributing](#getting-help-and-contributing)
   - [License](#license)
   - [Code of Conduct](#code-of-conduct)
 
@@ -146,7 +146,7 @@ Kreds.show
 # => { aws: { access_key_id: "...", secret_access_key: "..." }, ... }
 ```
 
-## Contributing
+## Getting Help and Contributing
 
 ### Getting Help
 Have a question or need assistance? Open a discussion in our [discussions section](https://github.com/brownboxdev/kreds/discussions) for:
