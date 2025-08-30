@@ -1,4 +1,7 @@
-<!--TODO-->
+## v1.1.4
+
+- Relaxed dependency versions
+- Minor code optimizations
 
 ## v1.1.3
 
