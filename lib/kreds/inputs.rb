@@ -7,9 +7,9 @@ module Kreds
     include Dry.Types()
 
     TYPES = {
-      symbol_array: -> { self::Array.of(self::Coercible::Symbol).constrained(min_size: 1) },
-      non_empty_string: -> { self::Strict::String.constrained(min_size: 1) },
-      boolean: -> { self::Strict::Bool }
+      symbol_array: self::Array.of(self::Coercible::Symbol).constrained(min_size: 1),
+      non_empty_string: self::Strict::String.constrained(min_size: 1),
+      boolean: self::Strict::Bool
     }.freeze
 
     def process(value, as:, optional: false, error: Kreds::InvalidArgumentError, message: nil)
@@ -23,6 +23,6 @@ module Kreds
 
     private
 
-    def type_for(name) = Kreds::Inputs::TYPES.fetch(name).call
+    def type_for(name) = Kreds::Inputs::TYPES.fetch(name)
   end
 end

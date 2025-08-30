@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "dry-types", "~> 1.8"
+  spec.add_dependency "dry-types", "~> 1.7"
   spec.add_dependency "rails", ">= 7.1", "< 8.1"
 end
