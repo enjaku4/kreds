@@ -1,7 +1,7 @@
 # Kreds: Streamlined Rails Credentials Access
 
 [![Gem Version](https://badge.fury.io/rb/kreds.svg)](http://badge.fury.io/rb/kreds)
-[![Github Actions badge](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/brownboxdev/kreds/actions/workflows/ci.yml)
+[![Github Actions badge](https://github.com/enjaku4/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/enjaku4/kreds/actions/workflows/ci.yml)
 
 Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few extra features built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive — that's where Kreds comes in.
 
@@ -149,13 +149,13 @@ Kreds.show
 ## Getting Help and Contributing
 
 ### Getting Help
-Have a question or need assistance? Open a discussion in our [discussions section](https://github.com/brownboxdev/kreds/discussions) for:
+Have a question or need assistance? Open a discussion in our [discussions section](https://github.com/enjaku4/kreds/discussions) for:
 - Usage questions
 - Implementation guidance
 - Feature suggestions
 
 ### Reporting Issues
-Found a bug? Please [create an issue](https://github.com/brownboxdev/kreds/issues) with:
+Found a bug? Please [create an issue](https://github.com/enjaku4/kreds/issues) with:
 - A clear description of the problem
 - Steps to reproduce the issue
 - Your environment details (Rails version, Ruby version, etc.)
@@ -164,14 +164,14 @@ Found a bug? Please [create an issue](https://github.com/brownboxdev/kreds/issue
 Ready to contribute? You can:
 - Fix bugs by submitting pull requests
 - Improve documentation
-- Add new features (please discuss first in our [discussions section](https://github.com/brownboxdev/kreds/discussions))
+- Add new features (please discuss first in our [discussions section](https://github.com/enjaku4/kreds/discussions))
 
-Before contributing, please read the [contributing guidelines](https://github.com/brownboxdev/kreds/blob/master/CONTRIBUTING.md)
+Before contributing, please read the [contributing guidelines](https://github.com/enjaku4/kreds/blob/master/CONTRIBUTING.md)
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://github.com/brownboxdev/kreds/blob/master/LICENSE.txt).
+The gem is available as open source under the terms of the [MIT License](https://github.com/enjaku4/kreds/blob/master/LICENSE.txt).
 
 ## Code of Conduct
 
-Everyone interacting in the Kreds project is expected to follow the [code of conduct](https://github.com/brownboxdev/kreds/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Kreds project is expected to follow the [code of conduct](https://github.com/enjaku4/kreds/blob/master/CODE_OF_CONDUCT.md).

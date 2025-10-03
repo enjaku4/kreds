@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.name = "kreds"
   spec.version = Kreds::VERSION
   spec.authors = ["enjaku4"]
-  spec.homepage = "https://github.com/brownboxdev/kreds"
+  spec.homepage = "https://github.com/enjaku4/kreds"
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/master/CHANGELOG.md"
