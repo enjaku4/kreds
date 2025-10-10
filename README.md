@@ -1,7 +1,9 @@
 # Kreds: Streamlined Rails Credentials Access
 
 [![Gem Version](https://badge.fury.io/rb/kreds.svg)](http://badge.fury.io/rb/kreds)
+[![Downloads](https://img.shields.io/gem/dt/kreds.svg)](https://rubygems.org/gems/kreds)
 [![Github Actions badge](https://github.com/enjaku4/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/enjaku4/kreds/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/enjaku4/kreds.svg)](LICENSE)
 
 Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few extra features built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive — that's where Kreds comes in.
 
