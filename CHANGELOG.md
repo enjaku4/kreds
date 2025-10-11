@@ -1,3 +1,7 @@
+## v1.1.5
+
+- Performance improvement
+
 ## v1.1.4
 
 - Relaxed dependency versions
