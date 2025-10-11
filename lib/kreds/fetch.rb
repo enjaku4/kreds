@@ -7,7 +7,7 @@ module Kreds
 
       path = []
 
-      symbolized_keys.reduce(Kreds.show) do |hash, key|
+      symbolized_keys.reduce(Rails.application.credentials) do |hash, key|
         path << key
         fetch_key(hash, key, path, symbolized_keys)
       end
