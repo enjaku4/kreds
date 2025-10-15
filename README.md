@@ -5,35 +5,29 @@
 [![Github Actions badge](https://github.com/enjaku4/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/enjaku4/kreds/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/enjaku4/kreds.svg)](LICENSE)
 
-Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few extra features built in. Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive — that's where Kreds comes in.
+Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive - that's where Kreds comes in. Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few extra features built in. It provides environment variable fallback support and blank value detection with clear human-readable error messages.
 
-**Key Features:**
+**Example of Usage:**
 
-- Simplified credential access with clear error messages
-- Environment variable fallback support
-- Environment-scoped credentials access
-- Blank value detection and prevention
-
-**Before and After:**
+Say you want to fetch `[:recaptcha][:site_key]` from your Rails credentials but forgot to set a value:
 
 ```ruby
-# Instead of this (long, silent failures if value is missing):
+# Rails credentials (silent failure, unclear errors):
 Rails.application.credentials[:recaptcha][:site_key]
 # => nil
 
-# Or this (long, unclear errors):
 Rails.application.credentials[:captcha][:site_key]
 # => undefined method `[]' for nil:NilClass (NoMethodError)
 
-# Or even this (longer, still unclear errors):
 Rails.application.credentials.fetch(:recaptcha).fetch(:key)
 # => key not found: :key (KeyError)
 
-# You can write this (shorter, human-readable errors):
+# Kreds (clear, human-readable errors):
 Kreds.fetch!(:recaptcha, :site_key)
 # => Blank value in credentials: [:recaptcha][:site_key] (Kreds::BlankCredentialsError)
-Kreds.fetch!(:captcha, :site_key)
-# => Credentials key not found: [:captcha] (Kreds::UnknownCredentialsError)
+
+Kreds.fetch!(:recaptcha, :key)
+# => Credentials key not found: [:recaptcha][:key] (Kreds::UnknownCredentialsError)
 ```
 
 ## Table of Contents
@@ -58,7 +52,7 @@ Add Kreds to your Gemfile:
 gem "kreds"
 ```
 
-And then execute:
+Install the gem:
 
 ```bash
 bundle install
