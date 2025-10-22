@@ -9,7 +9,7 @@ Rails credentials are a convenient way to store secrets, but retrieving them cou
 
 **Example of Usage:**
 
-Say you want to fetch `[:recaptcha][:site_key]` from your Rails credentials but forgot to set a value:
+Say you want to fetch `[:recaptcha][:site_key]` from your Rails credentials but forgot to set a value or made a typo in the key name:
 
 ```ruby
 # Rails credentials (silent failure, unclear errors):
