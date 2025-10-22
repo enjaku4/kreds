@@ -1,3 +1,7 @@
+## v1.1.6
+
+- Added support for Rails 8.1
+
 ## v1.1.5
 
 - Performance improvement
