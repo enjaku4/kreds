@@ -5,7 +5,7 @@
 [![Github Actions badge](https://github.com/enjaku4/kreds/actions/workflows/ci.yml/badge.svg)](https://github.com/enjaku4/kreds/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/enjaku4/kreds.svg)](LICENSE)
 
-Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive - that's where Kreds comes in. Kreds is a simpler, shorter, and safer way to access Rails credentials, with a few extra features built in. It provides environment variable fallback support and blank value detection with clear human-readable error messages.
+Rails credentials are a convenient way to store secrets, but retrieving them could be more intuitive. Kreds provides a simpler, shorter, and safer way to access Rails credentials with blank value detection and clear human-readable error messages.
 
 **Example of Usage:**
 
@@ -54,7 +54,7 @@ gem "kreds"
 
 Install the gem:
 
-```bash
+```shell
 bundle install
 ```
 
