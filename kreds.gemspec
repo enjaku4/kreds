@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.metadata["documentation_uri"] = "#{spec.homepage}/blob/master/README.md"
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.summary = "The missing shorthand for Rails credentials"
-  spec.description = "Kreds provides a simpler, shorter, and safer way to access Rails credentials with clear error messages, environment variable fallback support, and blank value detection"
+  spec.description = "Simpler and safer Rails credentials access with blank value detection and clear error messages"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2", "< 3.5"
 
