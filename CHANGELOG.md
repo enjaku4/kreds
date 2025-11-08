@@ -1,3 +1,5 @@
+<!--TODO: new version-->
+
 ## v1.1.6
 
 - Added support for Rails 8.1
