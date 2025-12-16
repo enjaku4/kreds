@@ -1,28 +1,25 @@
-require "dry-types"
-
 module Kreds
   module Inputs
     extend self
 
-    include Dry.Types()
+    def process(value, as:, optional: false)
+      return value if optional && value.nil?
 
-    TYPES = {
-      symbol_array: self::Array.of(self::Coercible::Symbol).constrained(min_size: 1),
-      non_empty_string: self::Strict::String.constrained(min_size: 1),
-      boolean: self::Strict::Bool
-    }.freeze
-
-    def process(value, as:, optional: false, error: Kreds::InvalidArgumentError, message: nil)
-      checker = type_for(as)
-      checker = checker.optional if optional
-
-      checker[value]
-    rescue Dry::Types::CoercionError => e
-      raise error, message || e.message
+      send(as, value)
     end
 
     private
 
-    def type_for(name) = Kreds::Inputs::TYPES.fetch(name)
+    def symbol_array(value)
+      return value.map(&:to_sym) if value.is_a?(Array) && value.any? && value.all? { _1.is_a?(String) || _1.is_a?(Symbol) }
+
+      raise(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `#{value.inspect}`")
+    end
+
+    def non_empty_string(value)
+      return value if value.is_a?(String) && value.present?
+
+      raise(Kreds::InvalidArgumentError, "Expected a non-empty string, got `#{value.inspect}`")
+    end
   end
 end
