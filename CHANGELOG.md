@@ -1,4 +1,7 @@
-<!--TODO: new version-->
+## v1.1.7
+
+- Added support for Ruby 4
+- Dropped unnecessary dependencies
 
 ## v1.1.6
 
