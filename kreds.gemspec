@@ -16,7 +16,6 @@ Gem::Specification.new do |spec|
   spec.summary = "The missing shorthand for Rails credentials"
   spec.description = "Simpler and safer Rails credentials access with blank value detection and clear error messages"
   spec.license = "MIT"
-  # TODO: support new ruby
   spec.required_ruby_version = ">= 3.2", "< 4.1"
 
   spec.files = [
