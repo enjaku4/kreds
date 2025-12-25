@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.summary = "The missing shorthand for Rails credentials"
   spec.description = "Simpler and safer Rails credentials access with blank value detection and clear error messages"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.2", "< 3.5"
+  spec.required_ruby_version = ">= 3.2", "< 4.1"
 
   spec.files = [
     "kreds.gemspec", "README.md", "CHANGELOG.md", "LICENSE.txt"
@@ -24,6 +24,5 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "dry-types", "~> 1.7"
   spec.add_dependency "rails", ">= 7.1", "< 8.2"
 end
