@@ -41,7 +41,7 @@ module Kreds
     end
 
     def fallback_to_var(error, var, &)
-      return raise_or_yield(error, &) if var.blank?
+      return raise_or_yield(error, &) if var.nil?
 
       var!(var, &)
     rescue Kreds::BlankEnvironmentVariableError, Kreds::UnknownEnvironmentVariableError => e
