@@ -2,7 +2,7 @@
 
 - Dropped support for Ruby 3.2
 - Dropped support for Rails 7.1
-- Minor code improvements
+- Improved error messages and input validation
 
 ## v1.1.7
 
