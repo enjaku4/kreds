@@ -5,7 +5,7 @@ module Kreds
     end
 
     def env_show
-      show[Rails.env.to_sym].to_h
+      show[Rails.env.to_sym] || {}
     end
   end
 end

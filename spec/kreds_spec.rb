@@ -23,6 +23,11 @@ RSpec.describe Kreds do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("staging"))
       expect(described_class.env_show).to eq({})
     end
+
+    it "returns the raw value when environment entry is not a hash" do
+      allow(described_class).to receive(:show).and_return({ test: "not_a_hash" })
+      expect(described_class.env_show).to eq("not_a_hash")
+    end
   end
 
   describe ".fetch!" do
