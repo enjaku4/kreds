@@ -3,6 +3,8 @@
 - Dropped support for Ruby 3.2
 - Dropped support for Rails 7.1
 - Improved error messages and input validation
+- Added `Kreds.env_show` method
+- `Kreds.env_fetch!` now raises `InvalidArgumentError` when called with no keys
 
 ## v1.1.7
 
