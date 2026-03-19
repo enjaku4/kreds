@@ -24,10 +24,10 @@ Rails.application.credentials.fetch(:recaptcha).fetch(:key)
 
 # Kreds (clear, human-readable errors):
 Kreds.fetch!(:recaptcha, :site_key)
-# => Blank value in credentials: [:recaptcha][:site_key] (Kreds::BlankCredentialsError)
+# => Blank value in credentials: :recaptcha => :site_key (Kreds::BlankCredentialsError)
 
 Kreds.fetch!(:recaptcha, :key)
-# => Credentials key not found: [:recaptcha][:key] (Kreds::UnknownCredentialsError)
+# => Credentials key not found: :recaptcha => :key (Kreds::UnknownCredentialsError)
 ```
 
 ## Table of Contents
@@ -139,6 +139,18 @@ Useful for debugging and exploring available credentials in the Rails console.
 
 ```ruby
 Kreds.show
+# => { production: { aws: { access_key_id: "...", secret_access_key: "..." } }, ... }
+```
+
+**`Kreds.env_show`**
+
+Like `show`, but scoped to the current Rails environment.
+
+**Returns:** Hash containing credentials for `Rails.env`
+
+```ruby
+# In production, returns credentials[:production]
+Kreds.env_show
 # => { aws: { access_key_id: "...", secret_access_key: "..." }, ... }
 ```
 

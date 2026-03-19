@@ -14,6 +14,17 @@ RSpec.describe Kreds do
     end
   end
 
+  describe ".env_show" do
+    it "returns credentials for the current environment" do
+      expect(described_class.env_show).to eq({ foo: [1, 2, 3] })
+    end
+
+    it "returns empty hash for an environment not in credentials" do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("staging"))
+      expect(described_class.env_show).to eq({})
+    end
+  end
+
   describe ".fetch!" do
     describe "input validation" do
       it "raises error for empty keys" do
