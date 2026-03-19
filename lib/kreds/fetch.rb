@@ -14,7 +14,7 @@ module Kreds
     end
 
     def env_fetch!(*keys, var: nil, &)
-      fetch!(Rails.env, *keys, var:, &)
+      fetch!(Rails.env, *Kreds::Inputs.process(keys, as: :symbol_array), var:, &)
     end
 
     def var!(var, &)
@@ -33,7 +33,7 @@ module Kreds
       value = hash.fetch(key)
 
       raise Kreds::BlankCredentialsError, "Blank value in credentials: #{path_to_s(path)}" if value.blank?
-      raise Kreds::UnknownCredentialsError, "Credentials key not found: #{path_to_s(path)}[:#{keys[path.size]}]" unless value.is_a?(Hash) || keys == path
+      raise Kreds::UnknownCredentialsError, "Credentials key not found: #{path_to_s(path.append(keys[path.size]))}" unless value.is_a?(Hash) || keys == path
 
       value
     rescue KeyError
@@ -41,7 +41,7 @@ module Kreds
     end
 
     def fallback_to_var(error, var, &)
-      return raise_or_yield(error, &) if var.blank?
+      return raise_or_yield(error, &) if var.nil?
 
       var!(var, &)
     rescue Kreds::BlankEnvironmentVariableError, Kreds::UnknownEnvironmentVariableError => e
@@ -53,7 +53,7 @@ module Kreds
     end
 
     def path_to_s(path)
-      "[:#{path.join("][:")}]"
+      path.map(&:inspect).join(" => ")
     end
   end
 end

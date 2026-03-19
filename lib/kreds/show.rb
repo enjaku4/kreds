@@ -1,7 +1,11 @@
 module Kreds
   module Show
     def show
-      Rails.application.credentials.as_json.deep_symbolize_keys
+      Rails.application.credentials.config.to_h
+    end
+
+    def env_show
+      show[Rails.env.to_sym] || {}
     end
   end
 end

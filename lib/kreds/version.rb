@@ -1,3 +1,3 @@
 module Kreds
-  VERSION = "1.1.7".freeze
+  VERSION = "2.0.0".freeze
 end
