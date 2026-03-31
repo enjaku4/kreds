@@ -14,6 +14,22 @@ RSpec.describe Kreds do
     end
   end
 
+  describe ".env_show" do
+    it "returns credentials for the current environment" do
+      expect(described_class.env_show).to eq({ foo: [1, 2, 3] })
+    end
+
+    it "returns empty hash for an environment not in credentials" do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("staging"))
+      expect(described_class.env_show).to eq({})
+    end
+
+    it "returns the raw value when environment entry is not a hash" do
+      allow(described_class).to receive(:show).and_return({ test: "not_a_hash" })
+      expect(described_class.env_show).to eq("not_a_hash")
+    end
+  end
+
   describe ".fetch!" do
     describe "input validation" do
       it "raises error for empty keys" do
@@ -38,17 +54,17 @@ RSpec.describe Kreds do
 
       it "raises error for missing end key" do
         expect { described_class.fetch!(:foo, :bar, :bad) }
-          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:foo][:bar][:bad]")
+          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: :foo => :bar => :bad")
       end
 
       it "raises error for missing middle key" do
         expect { described_class.fetch!(:foo, :bad, :baz) }
-          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:foo][:bad]")
+          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: :foo => :bad")
       end
 
       it "raises error for blank value" do
         expect { described_class.fetch!(:bad) }
-          .to raise_error(Kreds::BlankCredentialsError, "Blank value in credentials: [:bad]")
+          .to raise_error(Kreds::BlankCredentialsError, "Blank value in credentials: :bad")
       end
     end
 
@@ -116,7 +132,7 @@ RSpec.describe Kreds do
     context "when handling edge cases" do
       it "raises error when trying to access non-hash as hash" do
         expect { described_class.fetch!(:foo, :bar, :baz, :extra) }
-          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:foo][:bar][:baz][:extra]")
+          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: :foo => :bar => :baz => :extra")
       end
 
       it "works with single key" do
@@ -128,7 +144,7 @@ RSpec.describe Kreds do
   describe ".env_fetch!" do
     it "raises error for invalid key types" do
       expect { described_class.env_fetch!(:foo, 42) }
-        .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[\"test\", :foo, 42]`")
+        .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[:foo, 42]`")
     end
 
     it "raises error for invalid var type when fallback is needed" do
@@ -137,8 +153,9 @@ RSpec.describe Kreds do
     end
 
     context "without var" do
-      it "returns entire test environment hash when no keys provided" do
-        expect(described_class.env_fetch!).to eq({ foo: [1, 2, 3] })
+      it "raises error for empty keys" do
+        expect { described_class.env_fetch! }
+          .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[]`")
       end
 
       it "returns specific value from test environment" do
@@ -147,7 +164,7 @@ RSpec.describe Kreds do
 
       it "raises error for missing key in test environment" do
         expect { described_class.env_fetch!(:foo, :bar, :bad) }
-          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: [:test][:foo][:bar]")
+          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: :test => :foo => :bar")
       end
     end
 
