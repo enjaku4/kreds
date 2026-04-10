@@ -170,8 +170,8 @@ Found a bug? Please [create an issue](https://github.com/enjaku4/kreds/issues) w
 
 ### Contributing Code
 Ready to contribute? You can:
-- Fix bugs by submitting pull requests
-- Improve documentation
+- Fix bugs or improve existing code
+- Expand or clarify documentation
 - Add new features (please discuss first in the [discussions section](https://github.com/enjaku4/kreds/discussions))
 
 Before contributing, please read the [contributing guidelines](https://github.com/enjaku4/kreds/blob/master/CONTRIBUTING.md)
