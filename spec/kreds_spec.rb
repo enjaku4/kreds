@@ -5,7 +5,8 @@ RSpec.describe Kreds do
         foo: { bar: { baz: 42 } },
         bad: nil,
         secret_key_base: "dummy_secret_key_base",
-        test: { foo: [1, 2, 3] }
+        test: { foo: [1, 2, 3] },
+        flag: false
       }
     end
 
@@ -34,7 +35,7 @@ RSpec.describe Kreds do
     describe "input validation" do
       it "raises error for empty keys" do
         expect { described_class.fetch! }
-          .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[]`")
+          .to raise_error(Kreds::InvalidArgumentError, "No credentials keys provided")
       end
 
       it "raises error for invalid key types" do
@@ -65,6 +66,15 @@ RSpec.describe Kreds do
       it "raises error for blank value" do
         expect { described_class.fetch!(:bad) }
           .to raise_error(Kreds::BlankCredentialsError, "Blank value in credentials: :bad")
+      end
+
+      it "returns false for a false value" do
+        expect(described_class.fetch!(:flag)).to be false
+      end
+
+      it "raises error for a key nested under a false value" do
+        expect { described_class.fetch!(:flag, :sub) }
+          .to raise_error(Kreds::UnknownCredentialsError, "Credentials key not found: :flag => :sub")
       end
     end
 
@@ -155,7 +165,7 @@ RSpec.describe Kreds do
     context "without var" do
       it "raises error for empty keys" do
         expect { described_class.env_fetch! }
-          .to raise_error(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `[]`")
+          .to raise_error(Kreds::InvalidArgumentError, "No credentials keys provided")
       end
 
       it "returns specific value from test environment" do

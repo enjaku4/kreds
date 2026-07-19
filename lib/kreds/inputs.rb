@@ -11,7 +11,9 @@ module Kreds
     private
 
     def symbol_array(value)
-      return value.map(&:to_sym) if value.is_a?(Array) && value.any? && value.all? { _1.is_a?(String) || _1.is_a?(Symbol) }
+      raise(Kreds::InvalidArgumentError, "No credentials keys provided") if value == []
+
+      return value.map(&:to_sym) if value.is_a?(Array) && value.all? { _1.is_a?(String) || _1.is_a?(Symbol) }
 
       raise(Kreds::InvalidArgumentError, "Expected an array of symbols or strings, got `#{value.inspect}`")
     end
