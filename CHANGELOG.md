@@ -1,3 +1,8 @@
+## v2.0.1
+
+- Fixed `false` credential values being treated as blank
+- Clarified the error message raised when no credentials keys are provided
+
 ## v2.0.0
 
 - Dropped support for Ruby 3.2
