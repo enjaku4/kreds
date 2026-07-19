@@ -32,7 +32,7 @@ module Kreds
     def fetch_key(hash, key, path, keys)
       value = hash.fetch(key)
 
-      raise Kreds::BlankCredentialsError, "Blank value in credentials: #{path_to_s(path)}" if value.blank?
+      raise Kreds::BlankCredentialsError, "Blank value in credentials: #{path_to_s(path)}" if value != false && value.blank?
       raise Kreds::UnknownCredentialsError, "Credentials key not found: #{path_to_s(path.append(keys[path.size]))}" unless value.is_a?(Hash) || keys == path
 
       value
